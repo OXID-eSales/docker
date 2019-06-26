@@ -15,9 +15,8 @@ RUN apt-get update -y && \
     apt-get purge -y --auto-remove $TempDependencies && \
     rm -rf /var/lib/apt/lists/*
 
-# set up mailhog as sendmail target
-RUN echo "mailhub=mailhog:1025" >> /etc/ssmtp/ssmtp.conf
-RUN echo "sendmail_path=sendmail -i -t" >> /usr/local/etc/php/conf.d/php-sendmail.ini
+# set sendmail for php to ssmtp
+RUN echo "sendmail_path=/usr/sbin/ssmtp -t" > /usr/local/etc/php/conf.d/php-sendmail.ini
 
 # remove memory limit
 RUN echo "memory_limit = -1" > /usr/local/etc/php/conf.d/memory-limit-php.ini
