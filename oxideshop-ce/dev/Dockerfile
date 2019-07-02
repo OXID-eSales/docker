@@ -25,7 +25,7 @@ RUN mkdir -p /var/www/oxideshop && \
 # Actions which will be executed if /var/www/oxideshop is empty
 ENV if_empty_action1="echo \"Empty shop directory found, moving prepared files.\""
 ENV if_empty_action2="chown -R \$HOST_USER_ID.\$HOST_GROUP_ID \/var\/www\/oxideshop_template\/"
-ENV if_empty_action3="mv \/var\/www\/oxideshop_template\/* \/var\/www\/oxideshop\/"
+ENV if_empty_action3="\/bin\/bash -c 'shopt -s dotglob \&\& mv \/var\/www\/oxideshop_template\/* \/var\/www\/oxideshop\/'"
 ENV if_empty_action4="sleep 5 \&\& \/var\/www\/oxideshop\/vendor\/bin\/reset-shop"
 ENV if_empty="${if_empty_action1};\n  ${if_empty_action2};\n  ${if_empty_action3};\n  ${if_empty_action4}"
 
