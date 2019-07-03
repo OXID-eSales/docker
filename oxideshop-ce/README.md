@@ -1,7 +1,7 @@
 OXID eShop Community Edition
 ============================
 
-This container is based on the images provided by https://github.com/OXID-eSales/oxideshop-docker-php.
+This container is based on the images provided by https://hub.docker.com/r/oxidesales/oxideshop-docker-php.
 
 For an example usage see https://github.com/OXID-eSales/oxvm_eshop/tree/docker_developer_preview.
 
@@ -24,4 +24,3 @@ This script is a wrapper providing easy building of the containers.
 
 - For "-t dev" all tags from https://github.com/OXID-eSales/oxideshop_metapackage_ce/tags are valid to be used
 - For "-t project" a dependency file has to be available a.e. `project/dependencies/v6.1.3.sh`
-
