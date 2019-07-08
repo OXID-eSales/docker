@@ -8,7 +8,7 @@ RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
     $Dependencies $TempDependencies && \
     docker-php-ext-configure gd --with-jpeg-dir=/usr/local/ && \
-    docker-php-ext-install -j$(nproc) curl json xml mbstring zip bcmath soap pdo_mysql gd && \
+    docker-php-ext-install -j$(nproc) curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli && \
     pecl install xdebug && \
     apt-get clean && \
     apt-get autoremove -y && \
