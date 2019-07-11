@@ -1,4 +1,5 @@
-FROM php:7.0-fpm
+ARG PHP_VERSION=7.0
+FROM php:$PHP_VERSION-fpm
 
 ARG RUNTIME_PACKAGE_DEPS="ssmtp libfreetype6 libjpeg62-turbo unzip git mysql-client sudo rsync liblz4-tool"
 ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
