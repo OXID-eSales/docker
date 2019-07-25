@@ -1,7 +1,7 @@
 ARG PHP_VERSION=7.0
 FROM php:$PHP_VERSION-fpm
 
-ARG RUNTIME_PACKAGE_DEPS="ssmtp libfreetype6 libjpeg62-turbo unzip git mysql-client sudo rsync liblz4-tool"
+ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool"
 ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
 ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
 ARG PHP_MEMORY_LIMIT="-1"
@@ -19,8 +19,8 @@ RUN apt-get update -y \
     && apt-get purge -y --auto-remove $BUILD_PACKAGE_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-# set sendmail for php to ssmtp
-RUN echo "sendmail_path=/usr/sbin/ssmtp -t" > /usr/local/etc/php/conf.d/php-sendmail.ini
+# set sendmail for php to msmtp
+RUN echo "sendmail_path=/usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/php-sendmail.ini
 
 # remove memory limit
 RUN echo "memory_limit = $PHP_MEMORY_LIMIT" > /usr/local/etc/php/conf.d/memory-limit-php.ini
