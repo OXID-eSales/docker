@@ -32,7 +32,7 @@ ENV if_empty="${if_empty_action1};\n  ${if_empty_action2};\n  ${if_empty_action3
 # Just echo that nothing will be done if /var/www/oxideshop is not empty
 ENV if_not_empty="echo \"Shopdirectory is not empty, will not touch it and will not reset the database.\""
 
-ENV prepend_script="if [ \"\$(ls -A \/var\/www\/oxideshop)\" ];\nthen\n  ${if_not_empty};\nelse\n  ${if_empty};\nfi\n\n"
+ENV prepend_script="if [ \"\$(ls -A -I .gitkeep \/var\/www\/oxideshop)\" ];\nthen\n  ${if_not_empty};\nelse\n  ${if_empty};\nfi\n\n"
 ENV groupmatch_line="\(.*\)"
 ENV matching_group_one="\1"
 ENV php_entrypoint="/usr/local/bin/docker-php-entrypoint"
