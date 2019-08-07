@@ -30,6 +30,9 @@ RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)"
     echo "xdebug.remote_enable=on" >> /usr/optional_xdebug.ini && \
     echo "xdebug.remote_autostart=off" >> /usr/optional_xdebug.ini
 
+# add symlink to provide php also from /usr/bin
+RUN ln -s /usr/local/bin/php /usr/bin/php
+
 # install latest composer
 # COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN curl --silent --show-error https://getcomposer.org/installer | php && \
