@@ -9,3 +9,5 @@ Changes contain:
 - Removing memory limits on PHP
 - Installing Xdebug and provide an option to enable it
 - Installing Composer
+
+To build locally use ./build.sh [Major].[Minor] a.e. `./build.sh 7.1`

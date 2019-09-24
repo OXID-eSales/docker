@@ -1,10 +1,10 @@
-ARG PHP_VERSION=7.2
+ARG PHP_VERSION=7.0
 FROM php:$PHP_VERSION-fpm
 
-ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool iproute2"
-ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libmemcached-dev"
+ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool bc"
+ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
 ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
-ARG PECL_DEPS="xdebug memcached"
+ARG PECL_DEPS="xdebug"
 ARG PHP_MEMORY_LIMIT="-1"
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the laver)
@@ -15,6 +15,7 @@ RUN apt-get update -y \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr/local/ \
     && docker-php-ext-install -j$(nproc) $PHP_EXT_DEPS \
     && pecl install $PECL_DEPS \
+    && docker-php-source delete \
     && apt-get clean \
     && apt-get autoremove -y \
     && apt-get purge -y --auto-remove $BUILD_PACKAGE_DEPS \
@@ -31,4 +32,10 @@ RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)"
     echo "xdebug.remote_enable=on" >> /usr/optional_xdebug.ini && \
     echo "xdebug.remote_autostart=off" >> /usr/optional_xdebug.ini
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# add symlink to provide php also from /usr/bin
+RUN ln -s /usr/local/bin/php /usr/bin/php
+
+# install latest composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl --silent --show-error https://getcomposer.org/installer | php && \
+    mv /var/www/html/composer.phar /usr/local/bin/composer
