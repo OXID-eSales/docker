@@ -61,16 +61,6 @@ WORKDIR /home/webdriver
 COPY entrypoint.sh /usr/local/bin/entrypoint
 COPY vnc-start.sh /usr/local/bin/vnc-start
 
-# Configure Xvfb via environment variables:
-ENV SCREEN_WIDTH 1440
-ENV SCREEN_HEIGHT 900
-ENV SCREEN_DEPTH 24
-ENV DISPLAY :0
-ENV DISABLE_X11 true
-ENV ENABLE_VNC false
-ENV EXPOSE_X11 false
-ENV ENABLE_WEBDRIVER true
-
 USER webdriver
 
 EXPOSE 4444
