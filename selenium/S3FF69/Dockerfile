@@ -35,7 +35,7 @@ RUN GK_VERSION=$(if [ ${GECKODRIVER_VERSION:-latest} = "latest" ]; then echo $(w
 #========================
 # Selenium Configuration
 #========================
-COPY config.json /opt/selenium/config.json
+#COPY config.json /opt/selenium/config.json
 
 USER seluser
 
