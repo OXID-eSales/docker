@@ -5,14 +5,7 @@
       "browserName": "firefox",
       "maxInstances": 1,
       "seleniumProtocol": "WebDriver",
-      "applicationName": "oxideshop",
-      "moz:firefoxOptions":
-      {
-        "log":
-        {
-          "level": "info"
-        }
-      }
+      "applicationName": "oxideshop"
     }
   ],
   "proxy": "org.openqa.grid.selenium.proxy.DefaultRemoteProxy",
