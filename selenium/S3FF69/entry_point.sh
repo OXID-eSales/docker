@@ -19,15 +19,11 @@ SERVERNUM=$(get_server_num)
 
 rm -f /tmp/.X*lock
 
-#xvfb-run -n $SERVERNUM --server-args="-screen 0 $GEOMETRY -ac +extension RANDR" \
-#  java ${JAVA_OPTS} -jar /opt/selenium/selenium-server-standalone.jar -enablePassThrough false \
-#  ${SE_OPTS} &
-#NODE_PID=$!
-
-xvfb-run --server-args="-screen 0, 1024x768x24" xfce4-session& java -jar /opt/selenium/selenium-server-standalone.jar -enablePassThrough false
+xvfb-run -n $SERVERNUM --server-args="-screen 0, $GEOMETRY" \
+  xfce4-session& \
+  java ${JAVA_OPTS} -jar /opt/selenium/selenium-server-standalone.jar -enablePassThrough false \
+  ${SE_OPTS} &
 NODE_PID=$!
-
-#x11vnc -forever
 
 trap shutdown SIGTERM SIGINT
 wait $NODE_PID
