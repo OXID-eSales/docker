@@ -1,12 +1,5 @@
 FROM ubuntu:18.04
 
-#================================================
-# Customize sources for apt-get
-#================================================
-RUN  echo "deb http://archive.ubuntu.com/ubuntu bionic main universe\n" > /etc/apt/sources.list \
-  && echo "deb http://archive.ubuntu.com/ubuntu bionic-updates main universe\n" >> /etc/apt/sources.list \
-  && echo "deb http://security.ubuntu.com/ubuntu bionic-security main universe\n" >> /etc/apt/sources.list
-
 # No interactive frontend during docker build
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true
@@ -142,8 +135,24 @@ RUN GK_VERSION=$(if [ ${GECKODRIVER_VERSION:-latest} = "latest" ]; then echo $(w
 
 # Install 'pulseaudio' package to support WebRTC audio streams
 RUN apt-get update -qqy \
- && apt-get -qqy --no-install-recommends install -y pulseaudio \
+ && apt-get -qqy --no-install-recommends install -y pulseaudio software-properties-common \
+ && add-apt-repository -y ppa:ondrej/php \
  && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+COPY apt/*.list /tmp/
+
+RUN cp /tmp/sources.list /etc/apt/ && apt-get update \
+ && /usr/lib/dpkg/methods/apt/update /var/lib/dpkg/ \
+ && dpkg --set-selections < /tmp/selections.list \
+ && apt-get -y dselect-upgrade \
+ && xargs apt-mark auto < /tmp/auto.list \
+ && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+#RUN apt-get update -qqy \
+# && dpkg --clear-selections \
+# && dpkg --set-selections < /tmp/packages \
+# && apt-get -qqy --no-install-recommends dselect-upgrade \
+# && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 USER seluser
 
