@@ -98,7 +98,12 @@ RUN GK_VERSION=$(if [ ${GECKODRIVER_VERSION:-latest} = "latest" ]; then echo $(w
   && ln -fs /opt/geckodriver-$GK_VERSION /usr/bin/geckodriver
 
 # Install 'pulseaudio' package to support WebRTC audio streams
-RUN apt-get update && apt-get install -y pulseaudio
+# Install Java 11
+RUN apt-get update -qqy \
+ && apt-get -qqy --no-install-recommends install -y pulseaudio software-properties-common \
+ && add-apt-repository -y ppa:openjdk-r/ppa && apt-get update -qqy \
+ && apt-get install -y openjdk-11-jre-headless \
+ && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 USER seluser
 
