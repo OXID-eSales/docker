@@ -156,12 +156,12 @@ RUN cp /tmp/sources.list /etc/apt/ && apt-get update \
 
 USER seluser
 
-# COPY generate_config /opt/bin/generate_config
+ COPY generate_config /opt/bin/generate_config
 
 RUN sudo echo ""
 
 # Generating a default config during build time
-# RUN /opt/bin/generate_config > /opt/selenium/config.json
+RUN /opt/bin/generate_config > /opt/selenium/config.json
 
 #====================================
 # Scripts to run Selenium Standalone
