@@ -156,12 +156,26 @@ RUN cp /tmp/sources.list /etc/apt/ && apt-get update \
 
 USER seluser
 
- COPY generate_config /opt/bin/generate_config
-
 RUN sudo echo ""
 
 # Generating a default config during build time
+COPY generate_config /opt/bin/generate_config
 RUN /opt/bin/generate_config > /opt/selenium/config.json
+
+COPY ff/ffp.tar.bz2 /tmp/ffp.tar.bz2
+COPY ff/compatibility.ini /tmp/compatibility.ini
+#COPY ff/profiles.ini /home/seluser/.mozilla/firefox/profiles.ini
+#COPY ff/installs.ini /home/seluser/.mozilla/installs.ini
+
+RUN cd /tmp && tar xvfj ffp.tar.bz2 && sudo rm /tmp/ffp.tar.bz2 \
+ && echo "xvfb-run firefox &" > /tmp/ffex && chmod +x /tmp/ffex && /tmp/ffex && sleep 2 && rm /tmp/ffex \
+ && rm -rf /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/* \
+ && rm -rf /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/.p* \
+ && cp -r /tmp/default-release/* /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/ \
+ && cp /tmp/compatibility.ini /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/compatibility.ini
+
+# LastVersion=69.0.1_20190917135527/20190917135527
+# LastVersion=69.0.1_20190917224635/20190917224635
 
 #====================================
 # Scripts to run Selenium Standalone
