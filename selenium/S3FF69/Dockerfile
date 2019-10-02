@@ -28,30 +28,12 @@ ENV TZ "UTC"
 RUN echo "${TZ}" > /etc/timezone \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
-#========================================
-# Add normal user with passwordless sudo
-#========================================
-RUN useradd seluser \
-         --shell /bin/bash  \
-         --create-home \
-  && usermod -a -G sudo seluser \
-  && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
-  && echo 'seluser:secret' | chpasswd
-
-#===================================================
-# Run the following commands as non-privileged user
-#===================================================
-USER seluser
-
 #==========
 # Selenium
 #==========
-RUN  sudo mkdir -p /opt/selenium \
-  && sudo chown seluser:seluser /opt/selenium \
+RUN mkdir -p /opt/selenium \
   && wget --no-verbose https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar \
     -O /opt/selenium/selenium-server-standalone.jar
-
-USER root
 
 #==============
 # VNC and Xvfb
@@ -61,12 +43,6 @@ RUN apt-get update -qqy \
     locales \
     xvfb \
   && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
-
-#===================================================
-# Run the following commands as non-privileged user
-#===================================================
-
-USER seluser
 
 #============================
 # Some configuration options
@@ -100,8 +76,6 @@ ENV NODE_APPLICATION_NAME ""
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
 
 CMD ["/opt/bin/entry_point.sh"]
-
-USER root
 
 #=========
 # Firefox
@@ -139,34 +113,9 @@ RUN apt-get update -qqy \
  && add-apt-repository -y ppa:ondrej/php \
  && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
-#RUN apt-get update -qqy \
-# && dpkg --clear-selections \
-# && dpkg --set-selections < /tmp/packages \
-# && apt-get -qqy --no-install-recommends dselect-upgrade \
-# && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
-
-USER seluser
-
-RUN sudo echo ""
-
 # Generating a default config during build time
 # COPY generate_config /opt/bin/generate_config
 # RUN /opt/bin/generate_config > /opt/selenium/config.json
-
-COPY ff/ffp.tar.bz2 /tmp/ffp.tar.bz2
-#COPY ff/profiles.ini /home/seluser/.mozilla/firefox/profiles.ini
-#COPY ff/installs.ini /home/seluser/.mozilla/installs.ini
-
-RUN cd /tmp && tar xvfj ffp.tar.bz2 && sudo rm /tmp/ffp.tar.bz2 \
- && echo "xvfb-run firefox &" > /tmp/ffex && chmod +x /tmp/ffex && /tmp/ffex && sleep 2 && rm /tmp/ffex \
- && cp /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/compatibility.ini /tmp/compatibility.ini \
- && rm -rf /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/* \
- && rm -rf /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/.p* \
- && cp -r /tmp/default-release/* /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/ \
- && cp /tmp/compatibility.ini /home/seluser/.mozilla/firefox/$(ls -1 /home/seluser/.mozilla/firefox/ | grep t-r)/compatibility.ini
-
-# LastVersion=69.0.1_20190917135527/20190917135527
-# LastVersion=69.0.1_20190917224635/20190917224635
 
 #====================================
 # Scripts to run Selenium Standalone
