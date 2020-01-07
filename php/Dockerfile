@@ -6,13 +6,14 @@ ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
 ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
 ARG PECL_DEPS="xdebug"
 ARG PHP_MEMORY_LIMIT="-1"
+ARG GD_CONFIG="--with-jpeg-dir=/usr/local/"
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the laver)
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         $RUNTIME_PACKAGE_DEPS \
         $BUILD_PACKAGE_DEPS \
-    && docker-php-ext-configure gd --with-jpeg-dir=/usr/local/ \
+    && docker-php-ext-configure gd $GD_CONFIG \
     && docker-php-ext-install -j$(nproc) $PHP_EXT_DEPS \
     && pecl install $PECL_DEPS \
     && docker-php-source delete \

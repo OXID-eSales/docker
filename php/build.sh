@@ -43,10 +43,11 @@ fi
 # NOTICE: only for internal use, do not publish on dockerhub until 7.4 is released as final
 if [[ $1 == "7.4" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.4-rc')
+  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.4')
   DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libonig-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libmemcached-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='xdebug-beta memcached'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/'")
   BUILD="docker build ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.4 ."
   echo $BUILD
   eval $BUILD
