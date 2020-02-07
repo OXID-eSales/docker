@@ -8,7 +8,7 @@ ARG PECL_DEPS="xdebug memcached"
 ARG PHP_MEMORY_LIMIT="-1"
 ARG GD_CONFIG="--with-jpeg-dir=/usr/local/"
 
-# install dependencies and cleanup (needs to be one step, as else it will cache in the laver)
+# install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         $RUNTIME_PACKAGE_DEPS \
