@@ -20,6 +20,7 @@ RUN apt-get update -y \
     && apt-get clean \
     && apt-get autoremove -y \
     && apt-get purge -y --auto-remove $BUILD_PACKAGE_DEPS \
+    && usermod -a -G root www-data && usermod -a -G www-data root \
     && rm -rf /var/lib/apt/lists/*
 
 # set sendmail for php to msmtp
