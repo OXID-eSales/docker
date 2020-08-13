@@ -4,7 +4,7 @@ FROM php:$PHP_VERSION-fpm
 ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev"
 ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev zlib1g-dev"
 ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
-ARG PECL_DEPS="xdebug memcached"
+ARG PECL_DEPS="pecl install xdebug memcached"
 ARG PHP_MEMORY_LIMIT="-1"
 ARG GD_CONFIG="--with-jpeg-dir=/usr/local/"
 
@@ -15,7 +15,7 @@ RUN apt-get update -y \
         $BUILD_PACKAGE_DEPS \
     && docker-php-ext-configure gd $GD_CONFIG \
     && docker-php-ext-install -j$(nproc) $PHP_EXT_DEPS \
-    && pecl install $PECL_DEPS \
+    && $PECL_DEPS \
     && docker-php-source delete \
     && apt-get clean \
     && apt-get autoremove -y \
