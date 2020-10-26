@@ -40,7 +40,5 @@ RUN echo "extension=memcached.so" > /usr/optional_memcached.ini
 # add symlink to provide php also from /usr/bin
 RUN ln -s /usr/local/bin/php /usr/bin/php
 
-# install latest composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN curl --silent --show-error https://getcomposer.org/installer | php && \
-    mv /var/www/html/composer.phar /usr/local/bin/composer
+# install latest composer v1
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
