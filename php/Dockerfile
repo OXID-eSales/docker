@@ -42,3 +42,6 @@ RUN ln -s /usr/local/bin/php /usr/bin/php
 
 # install latest composer v1
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+
+# install latest composer v2 as composer2 binary
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
