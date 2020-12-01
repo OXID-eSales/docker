@@ -12,7 +12,7 @@ fi
 
 if [[ $1 == "7.0" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.9.0 memcached'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.7.2 memcached'")
   BUILD="docker build ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.0 ."
   echo $BUILD
   eval $BUILD
