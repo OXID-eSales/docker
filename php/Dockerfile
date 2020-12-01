@@ -7,6 +7,7 @@ ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
 ARG PECL_DEPS="pecl install xdebug memcached"
 ARG PHP_MEMORY_LIMIT="-1"
 ARG GD_CONFIG="--with-jpeg-dir=/usr/local/"
+ARG XDEBUG_INI="xdebug.ini"
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
@@ -30,9 +31,8 @@ RUN echo "sendmail_path=/usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/php-sendm
 RUN echo "memory_limit = $PHP_MEMORY_LIMIT" > /usr/local/etc/php/conf.d/memory-limit-php.ini
 
 # prepare optional xdebug ini
-RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/optional_xdebug.ini && \
-    echo "xdebug.remote_enable=on" >> /usr/optional_xdebug.ini && \
-    echo "xdebug.remote_autostart=off" >> /usr/optional_xdebug.ini
+COPY resources/$XDEBUG_INI /usr/optional_xdebug.ini
+RUN sed -i "s~locate_extension~$(find /usr/local/lib/php/extensions/ -name xdebug.so)~" /usr/optional_xdebug.ini
 
 # prepare optional memcached ini
 RUN echo "extension=memcached.so" > /usr/optional_memcached.ini
