@@ -68,12 +68,12 @@ fi
 
 if [[ $1 == "8.0" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.0-rc')
+  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.0')
   DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='echo nopecl'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
   BUILD="docker build ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.0 ."
   echo $BUILD
   eval $BUILD
