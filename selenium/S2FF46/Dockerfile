@@ -5,7 +5,7 @@ USER root
 #=========
 # Firefox
 #=========
-ENV FIREFOX_VERSION 47.0.1
+ENV FIREFOX_VERSION 46.0.1
 RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install firefox libasound2 libgtk2.0-0 \
   && rm -rf /var/lib/apt/lists/* \
