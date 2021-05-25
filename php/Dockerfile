@@ -30,6 +30,9 @@ RUN echo "sendmail_path=/usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/php-sendm
 # remove memory limit
 RUN echo "memory_limit = $PHP_MEMORY_LIMIT" > /usr/local/etc/php/conf.d/memory-limit-php.ini
 
+# enable error log by default
+RUN echo "log_errors = On" > /usr/local/etc/php/conf.d/error-log-php.ini
+
 # prepare optional xdebug ini
 COPY resources/$XDEBUG_INI /usr/optional_xdebug.ini
 RUN sed -i "s~locate_extension~$(find /usr/local/lib/php/extensions/ -name xdebug.so)~" /usr/optional_xdebug.ini
