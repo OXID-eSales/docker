@@ -90,5 +90,6 @@ RUN apt-get update -qqy \
 #==============================
 # Scripts to run Selenium Node
 #==============================
+COPY runsel /usr/local/bin/runsel
 COPY entry_point.sh /opt/bin/entry_point.sh
-RUN chmod +x /opt/bin/entry_point.sh
+RUN chmod +x /opt/bin/entry_point.sh && chmod +x /usr/local/bin/runsel

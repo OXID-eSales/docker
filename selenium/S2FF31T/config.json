@@ -17,7 +17,5 @@
     "port": 5555,
     "register": true,
     "registerCycle": 5000
-  },
-  "timeout": 300,
-  "browserTimeout": 300
+  }
 }

@@ -9,10 +9,6 @@ function shutdown {
   wait $NODE_PID
 }
 
-if [ ! -z "$SE_OPTS" ]; then
-  echo "appending selenium options: ${SE_OPTS}"
-fi
-
 rm -f /tmp/.X*lock
 
 SERVERNUM=$(get_server_num)
@@ -22,8 +18,7 @@ sudo -E -i -u seluser \
   $(for E in $(grep -vxFf asseluser asroot); do echo $E=$(eval echo \$$E); done) \
   DISPLAY=$DISPLAY \
   xvfb-run -n $SERVERNUM --server-args="-screen 0 $GEOMETRY -ac +extension RANDR" \
-  java ${JAVA_OPTS} -jar /opt/selenium/selenium-server-standalone.jar \
-  ${SE_OPTS} &
+  runsel &
 NODE_PID=$!
 
 trap shutdown SIGTERM SIGINT
