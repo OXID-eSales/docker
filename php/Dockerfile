@@ -50,4 +50,4 @@ COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Workaround for https://oxid-esales.atlassian.net/browse/OXDEV-4797
-RUN echo "php_admin_value[error_log] = /tmp/fpm-php.www.log" > /usr/local/etc/php-fpm.d/www.conf
+RUN echo "php_admin_value[error_log] = /tmp/fpm-php.www.log" >> /usr/local/etc/php-fpm.d/www.conf
