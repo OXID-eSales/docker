@@ -24,5 +24,7 @@ xvfb-run -n $SERVERNUM --server-args="-screen 0 $GEOMETRY -ac +extension RANDR" 
   ${SE_OPTS} &
 NODE_PID=$!
 
+x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY
+
 trap shutdown SIGTERM SIGINT
 wait $NODE_PID
