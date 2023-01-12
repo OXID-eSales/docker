@@ -106,7 +106,7 @@ if [[ $1 == "8.2" ]]; then
   DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-3.1.3 memcached'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.1 ."
+  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.2 ."
   echo $BUILD
   eval $BUILD
   exit 0
