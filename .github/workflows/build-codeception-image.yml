@@ -1,6 +1,8 @@
 name: Build codeception image and push to Docker Hub
 
 on:
+  schedule:
+    - cron: '* * */7 * *'
   push:
     paths:
       - 'codeception/**'
