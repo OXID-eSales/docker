@@ -18,9 +18,9 @@ jobs:
           - S2FF31
           - S2FF31T
           - S2FF46
-          - S2FF69
-          - S2FF77
-          - S2FF94
+          - S3FF69
+          - S3FF77
+          - S3FF94
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
