@@ -15,9 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         selenium:
-          - S2FF31
-          - S2FF31T
-          - S2FF46
           - S3FF69
           - S3FF77
           - S3FF94
