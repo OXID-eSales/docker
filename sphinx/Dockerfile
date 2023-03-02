@@ -17,6 +17,7 @@ RUN apt-get update -y && export LANG="en_US.utf8" && export LANGUAGE="en_US.utf8
     pip install -U Sphinx>=4.3.0 && \
     pip install sphinx_rtd_theme>=0.5.1 && \
     pip install docutils==0.16 && \
+    pip install sphinxcontrib-jquery==3.0.0 && \
     pip install sphinxcontrib-httpdomain && \
     pip install sphinxcontrib_plantuml && \
     pip install sphinxcontrib_phpdomain && \
