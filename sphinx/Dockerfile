@@ -14,10 +14,9 @@ RUN apt-get update -y && export LANG="en_US.utf8" && export LANGUAGE="en_US.utf8
     apt-get clean && \
     apt-get autoremove -y && \
     pip install wheel && \
-    pip install -U Sphinx==4.5.0 && \
-    pip install sphinx_rtd_theme==0.4.3 && \
-    pip install docutils==0.16 && \
-    pip install sphinxcontrib-jquery==3.0.0 && \
+    pip install -U Sphinx && \
+    pip install sphinx_rtd_theme==1.2.0 && \
+    pip install docutils==0.17.1 && \
     pip install sphinxcontrib-httpdomain && \
     pip install sphinxcontrib_plantuml && \
     pip install sphinxcontrib_phpdomain && \
