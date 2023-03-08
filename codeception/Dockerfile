@@ -1,8 +1,4 @@
-ARG NAMESPACE
-ARG VERSION
-ARG AUTHORS
-FROM ${NAMESPACE}/node-base:${VERSION}
-LABEL authors=${AUTHORS}
+FROM selenium/node-base:latest
 
 USER root
 
