@@ -27,9 +27,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: codeception/chromedriver
-          file: codeception/chromedriver/Dockerfile
+          context: codeception
+          file: codeception/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            oxidesales/oxideshop-docker-chromedriver:latest
+            oxidesales/oxideshop-docker-codeception:latest
