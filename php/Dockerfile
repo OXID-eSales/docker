@@ -17,7 +17,6 @@ RUN apt-get update -y \
     && docker-php-ext-configure gd $GD_CONFIG \
     && docker-php-ext-install -j$(nproc) $PHP_EXT_DEPS \
     && $PECL_DEPS \
-    && docker-php-ext-enable xdebug \
     && docker-php-source delete \
     && apt-get clean \
     && apt-get autoremove -y \
