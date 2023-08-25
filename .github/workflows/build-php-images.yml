@@ -31,18 +31,18 @@ jobs:
             PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
             XDEBUG_INI: "xdebug3.ini"
           - php_version: 8.1
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
-            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local"
-            PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
+            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/"
+            PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
           - php_version: 8.2
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
-            GD_CONFIG: "--with-jpeg=/usr/local/"
-            PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
+            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/"
+            PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
     steps:
       - name: Checkout repository
