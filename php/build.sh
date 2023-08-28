@@ -56,7 +56,7 @@ fi
 if [[ $1 == "7.4" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.4')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-3.1.3 memcached'")
@@ -70,7 +70,7 @@ fi
 if [[ $1 == "8.0" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.0')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp'")
@@ -85,7 +85,7 @@ fi
 if [[ $1 == "8.1" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.1')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/'")
@@ -100,7 +100,7 @@ fi
 if [[ $1 == "8.2" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.2')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
   DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/'")
