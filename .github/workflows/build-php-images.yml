@@ -14,63 +14,45 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: ["7.4", "8.0", "8.1", "8.2"]
-        include:
-          - php_version: 7.4
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
-            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
-            PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
-            GD_CONFIG: "--with-jpeg=/usr/local/"
-            PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
-            XDEBUG_INI: "xdebug3.ini"
-          - php_version: 8.0
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
-            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
-            PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
-            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp"
-            PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
-            XDEBUG_INI: "xdebug3.ini"
-          - php_version: 8.1
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3"
-            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
-            PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
-            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/"
-            PECL_DEPS: "pecl install xdebug memcached"
-            XDEBUG_INI: "xdebug3.ini"
-          - php_version: 8.2
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3"
-            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
-            PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
-            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/"
-            PECL_DEPS: "pecl install xdebug memcached"
-            XDEBUG_INI: "xdebug3.ini"
+        php_version: [ "8.2" ]
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Log into Docker Hub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: php
-          file: php/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          build-args: |
-            PHP_VERSION=${{ matrix.php_version }}
-            RUNTIME_PACKAGE_DEPS=${{ matrix.RUNTIME_PACKAGE_DEPS }}
-            BUILD_PACKAGE_DEPS=${{ matrix.BUILD_PACKAGE_DEPS }}
-            PHP_EXT_DEPS=${{ matrix.PHP_EXT_DEPS }}
-            GD_CONFIG=${{ matrix.GD_CONFIG }}
-            PECL_DEPS=${{ matrix.PECL_DEPS }}
-            XDEBUG_INI=${{ matrix.XDEBUG_INI }}
-          tags: |
-            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
+
+      - name: Build the image
+        run: |
+          cd php
+          ./build.sh ${{ matrix.php_version }}
+
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v2
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v2
+
+#      - name: Build
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: php
+#          file: php/Dockerfile
+#          platforms: linux/amd64,linux/arm64
+#          push: ${{ github.event_name != 'pull_request' }}
+#          build-args: |
+#            PHP_VERSION=${{ matrix.php_version }}
+#            RUNTIME_PACKAGE_DEPS=${{ matrix.RUNTIME_PACKAGE_DEPS }}
+#            BUILD_PACKAGE_DEPS=${{ matrix.BUILD_PACKAGE_DEPS }}
+#            PHP_EXT_DEPS=${{ matrix.PHP_EXT_DEPS }}
+#            GD_CONFIG=${{ matrix.GD_CONFIG }}
+#            PECL_DEPS=${{ matrix.PECL_DEPS }}
+#            XDEBUG_INI=${{ matrix.XDEBUG_INI }}
+#          tags: |
+#            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
+#
+#      - name: Log into Docker Hub
+#        if: github.event_name != 'pull_request'
+#        uses: docker/login-action@v2
+#        with:
+#          username: ${{ secrets.DOCKER_HUB_USER }}
+#          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
