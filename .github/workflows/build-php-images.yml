@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +54,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log into Docker Hub
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name != 'pull_request' && env.docker_hub_user != '' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
@@ -63,7 +65,7 @@ jobs:
           context: php
           file: php/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' && env.docker_hub_user != '' }}
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             RUNTIME_PACKAGE_DEPS=${{ matrix.RUNTIME_PACKAGE_DEPS }}
@@ -74,3 +76,21 @@ jobs:
             XDEBUG_INI=${{ matrix.XDEBUG_INI }}
           tags: |
             oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
+
+  finish:
+    if: always()
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK: "${{ secrets.SLACK_WEBHOOK_URL }}"
+    steps:
+      - name: Send custom JSON data to Slack workflow
+        if: ${{ always() && env.SLACK_WEBHOOK != '' }}
+        uses: 'OXID-eSales/github-actions/slack_status@v1'
+        with:
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
+          summary_list: |
+            Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          job_list: |
+            build%${{ needs.build.result }}
