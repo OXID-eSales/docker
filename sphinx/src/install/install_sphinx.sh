@@ -26,6 +26,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     python3-sphinxcontrib.plantuml
 apt-get clean
 apt-get autoremove -y
+rm /usr/lib/python3*/EXTERNALLY-MANAGED
 pip install sphinxcontrib_phpdomain
 pip install pygments-graphql
 pip install git+https://github.com/fabpot/sphinx-php.git
