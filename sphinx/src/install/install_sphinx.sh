@@ -21,7 +21,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     python3-wheel \
     python3-docutils \
     python3-sphinx \
-    python3-rtd-theme \
+    python3-sphinx-rtd-theme \
     python3-sphinxcontrib.httpdomain \
     python3-sphinxcontrib.plantuml
 apt-get clean
