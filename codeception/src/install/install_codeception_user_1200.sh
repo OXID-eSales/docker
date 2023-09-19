@@ -3,11 +3,15 @@ set -e
 set -x
 if [ -z "$CHROME_DRIVER_VERSION" ]; then
     CHROME_MAJOR_VERSION=$(google-chrome --version | sed -E "s/.* ([0-9]+)(\.[0-9]+){3}.*/\1/")
+    set +e
     NO_SUCH_KEY=$(curl -ls https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION} | head -n 1 | grep -oe NoSuchKey)
+    set -e
     while [ -n "$NO_SUCH_KEY" ]; do
       echo "No Chromedriver for version ${CHROME_MAJOR_VERSION}. Use previous major version instead"
       CHROME_MAJOR_VERSION=$((CHROME_MAJOR_VERSION-1))
+      set +e
       NO_SUCH_KEY=$(curl -ls https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION} | head -n 1 | grep -oe NoSuchKey)
+      set -e
     done
     CHROME_DRIVER_VERSION=$(wget --no-verbose -O - "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION}");
 fi
