@@ -21,13 +21,13 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     apache2-utils \
     python3-wheel \
     python3-docutils \
-    python3-sphinx
+    python3-sphinx \
+    python3-rtd-theme \
+    python3-sphinxcontrib.httpdomain \
+    python3-sphinxcontrib.plantuml \
+    python3-sphinxcontrib.phpdomain
 apt-get clean
 apt-get autoremove -y
-pip install sphinx_rtd_theme==1.2.0
-pip install sphinxcontrib-httpdomain
-pip install sphinxcontrib_plantuml
-pip install sphinxcontrib_phpdomain
 pip install pygments-graphql
 pip install git+https://github.com/fabpot/sphinx-php.git
 java -jar ./usr/share/plantuml/plantuml.jar -testdot
