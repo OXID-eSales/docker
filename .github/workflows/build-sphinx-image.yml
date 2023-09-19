@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      docker: ${{ secrets.DOCKER_HUB_USER }}
+      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
