@@ -1,5 +1,6 @@
 FROM selenium/node-base:latest
 
+COPY src /
 USER root
 
 #============================================
