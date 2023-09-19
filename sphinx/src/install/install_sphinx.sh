@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 apt-get update -y
 export LANG="en_US.utf8"
 export LANGUAGE="en_US.utf8"
