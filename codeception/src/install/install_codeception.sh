@@ -8,4 +8,5 @@ apt-get update -qqy
 apt-get -qqy install ${CHROME_VERSION:-google-chrome-stable}
 rm /etc/apt/sources.list.d/google-chrome.list
 rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+chmod a+x /opt/bin/*
 /opt/bin/wrap_chrome_binary
