@@ -6,7 +6,7 @@ wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
 echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 apt-get update -qqy
 apt-get -qqy install ${CHROME_VERSION:-google-chrome-stable} \
-    python3-pip python3-venv
+    python3-pip python3-venv python3-wheel
 rm /etc/apt/sources.list.d/google-chrome.list
 rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 chmod a+x /opt/bin/*
@@ -21,15 +21,14 @@ if [ -n "${CHROME_DRIVER_VERSION}" ]; then
   get-chrome-driver --download-version ${CHROME_DRIVER_VERSION} --extract
 else
     CHROME_DRIVER_VERSION=$(get-chrome-driver --stable-version)
-    echo "Using chromedriver version matching the current chrome version"
+    echo "Using chromedriver version ${CHROME_DRIVER_VERSION} matching the current chrome version"
     get-chrome-driver --auto-download --extract
 fi
 find .
-
 # remove venv and pip
 deactivate
-rm -r python3_temporary
-apt -y remove python3-venv python3-pip
+rm -r /python3_temporary
+apt -y remove python3-venv python3-pip python3-wheel
 apt-get clean
 apt-get autoremove -y
 # Install the driver
