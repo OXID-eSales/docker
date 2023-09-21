@@ -5,7 +5,7 @@ set -x
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 apt-get update -qqy
-apt-get -qqy install ${CHROME_VERSION:-google-chrome-stable} \
+apt-get -qqy install ${CHROME_VERSION:-google-chrome-stable} unzip \
     python3-pip python3-venv
 rm /etc/apt/sources.list.d/google-chrome.list
 rm -rf /var/lib/apt/lists/* /var/cache/apt/*
@@ -30,7 +30,7 @@ apt-get autoremove -y
 # Install the driver
 echo "Using chromedriver version ${CHROME_DRIVER_VERSION} from ${URL}"
 curl -ssJkLo /tmp/chromedriver_linux64.zip "${URL}"
-unzip /tmp/chromedriver_linux64.zip -d /opt/selenium
+unzip -v /tmp/chromedriver_linux64.zip -d /opt/selenium
 rm /tmp/chromedriver_linux64.zip
 mv "/opt/selenium/chromedriver" "/opt/selenium/chromedriver-${CHROME_DRIVER_VERSION}"
 chmod 755 "/opt/selenium/chromedriver-${CHROME_DRIVER_VERSION}"
