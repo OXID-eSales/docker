@@ -14,9 +14,6 @@ USER root
 #       google-chrome-beta  (pull latest beta)
 #============================================
 ARG CHROME_VERSION="google-chrome-stable"
-RUN /install/install_codeception.sh
-
-USER 1200
 #============================================
 # Chrome webdriver
 #============================================
@@ -24,7 +21,9 @@ USER 1200
 # Latest released version will be used by default
 #============================================
 ARG CHROME_DRIVER_VERSION
-RUN /install/install_codeception_user_1200.sh
+RUN /install/install_codeception.sh
+
+USER 1200
 
 # Boolean value, maps "--relax-checks"
 ENV SE_RELAX_CHECKS=true
