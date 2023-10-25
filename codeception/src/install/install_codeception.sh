@@ -24,11 +24,10 @@ else
     echo "Using chromedriver version ${CHROME_DRIVER_VERSION} matching the current chrome version"
     get-chrome-driver --auto-download --extract
 fi
-find .
 # remove venv and pip
 deactivate
 rm -r /python3_temporary
-apt -y remove python3-venv python3-pip python3-wheel
+apt-get -y remove python3-venv python3-pip python3-wheel
 apt-get clean
 apt-get autoremove -y
 # Install the driver
