@@ -34,7 +34,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' && env.docker_hub_user != '' }}
           tags: |
-            oxidesales/oxideshop-docker-codeception:4.13.0
+            oxidesales/oxideshop-docker-codeception:latest
   finish:
     if: always()
     needs: build
