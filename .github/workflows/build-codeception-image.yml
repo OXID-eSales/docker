@@ -44,7 +44,7 @@ jobs:
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
-        uses: 'OXID-eSales/github-actions/slack_status@v1'
+        uses: 'OXID-eSales/github-actions/slack_status@v3'
         with:
           slack_webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
