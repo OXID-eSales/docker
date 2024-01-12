@@ -19,6 +19,12 @@ jobs:
       matrix:
         nginx_version: ["1.24"]
     steps:
+      - name: build and push docker images
+        uses: 'OXID-eSales/github-actions/build_docker@v0'
+        with:
+          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -31,17 +37,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: nginx
-          file: nginx/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' && env.docker_hub_user != '' }}
-          build-args: |
-            NGINX_VERSION=${{ matrix.nginx_version }}
+          image_name: nginx
           tags: |
             oxidesales/oxideshop-docker-nginx:${{ matrix.nginx_version }}
+          build-args:  |
+            NGINX_VERSION=${{ matrix.nginx_version }}
 
   finish:
     if: always()
