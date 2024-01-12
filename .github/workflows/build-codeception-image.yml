@@ -23,6 +23,7 @@ jobs:
           tags: |
             oxidesales/oxideshop-docker-codeception:latest
           build_args: ''
+
   finish:
     if: always()
     needs: build
