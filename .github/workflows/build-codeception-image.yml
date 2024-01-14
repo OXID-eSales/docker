@@ -29,7 +29,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"
+      SLACK_WEBHOOK: "${{ secrets.SLACK_WEBHOOK_URL }}"
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
@@ -40,4 +40,4 @@ jobs:
           summary_list: |
             Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           job_list: |
-            build%${{ needs.build.result }}
+            build%${{ needs.build.result }
