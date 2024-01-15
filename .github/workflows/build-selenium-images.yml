@@ -30,6 +30,7 @@ jobs:
           tags: |
             oxidesales/oxideshop-docker-selenium:${{ matrix.selenium }}
           build-args: ''
+
   finish:
     if: always()
     needs: build
