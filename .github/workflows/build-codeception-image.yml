@@ -40,4 +40,4 @@ jobs:
           summary_list: |
             Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           job_list: |
-            build%${{ needs.build.result }
+            build%${{ needs.build.result }}
