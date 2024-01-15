@@ -22,20 +22,20 @@ jobs:
           image_name: codeception
           tags: |
             oxidesales/oxideshop-docker-codeception:latest
-          build_args: ''
+          build-args: ''
 
   finish:
     if: always()
     needs: build
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK: "${{ secrets.SLACK_WEBHOOK_URL }}"
+      SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
         uses: 'OXID-eSales/github-actions/slack_status@v1'
         with:
-          slack_webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
           title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
           summary_list: |
             Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
