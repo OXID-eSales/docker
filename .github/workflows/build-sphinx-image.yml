@@ -15,7 +15,7 @@ jobs:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
     steps:
       - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v0'
+        uses: 'OXID-eSales/github-actions/build_docker@v3'
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
