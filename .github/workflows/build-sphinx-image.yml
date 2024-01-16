@@ -24,6 +24,7 @@ jobs:
           tags: |
             oxidesales/oxideshop-docker-sphinx:latest
           build-args: ''
+          
   finish:
     if: always()
     needs: build

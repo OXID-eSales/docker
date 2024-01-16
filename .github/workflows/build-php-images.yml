@@ -46,6 +46,7 @@ jobs:
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/"
             PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
+            
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v0'
