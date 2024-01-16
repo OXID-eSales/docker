@@ -27,6 +27,7 @@ jobs:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
           image_name: selenium/${{ matrix.selenium }}
+          platforms: linux/amd64
           tags: |
             oxidesales/oxideshop-docker-selenium:${{ matrix.selenium }}
           build-args: ''
