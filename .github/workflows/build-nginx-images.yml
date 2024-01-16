@@ -25,6 +25,7 @@ jobs:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
           image_name: nginx
+          platforms: linux/amd64,linux/arm64
           tags: |
               oxidesales/oxideshop-docker-nginx:${{ matrix.nginx_version }}
           build-args:  |

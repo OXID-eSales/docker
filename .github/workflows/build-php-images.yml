@@ -53,6 +53,7 @@ jobs:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
           image_name: php
+          platforms: linux/amd64,linux/arm64
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             RUNTIME_PACKAGE_DEPS=${{ matrix.RUNTIME_PACKAGE_DEPS }}
