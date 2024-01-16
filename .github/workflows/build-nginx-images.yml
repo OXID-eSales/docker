@@ -19,42 +19,30 @@ jobs:
       matrix:
         nginx_version: ["1.24"]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Log into Docker Hub
-        if: g${{ github.event_name != 'pull_request' && env.docker_hub_user != '' }}
-        uses: docker/login-action@v3
+      - name: build and push docker images
+        uses: 'OXID-eSales/github-actions/build_docker@v3'
         with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: nginx
-          file: nginx/Dockerfile
+          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          image_name: nginx
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' && env.docker_hub_user != '' }}
-          build-args: |
-            NGINX_VERSION=${{ matrix.nginx_version }}
           tags: |
-            oxidesales/oxideshop-docker-nginx:${{ matrix.nginx_version }}
+              oxidesales/oxideshop-docker-nginx:${{ matrix.nginx_version }}
+          build-args:  |
+            NGINX_VERSION=${{ matrix.nginx_version }}
 
   finish:
     if: always()
     needs: build
     runs-on: ubuntu-latest
     env:
-      SLACK_WEBHOOK: "${{ secrets.SLACK_WEBHOOK_URL }}"
+      SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
         uses: 'OXID-eSales/github-actions/slack_status@v1'
         with:
-          slack_webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
           title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
           summary_list: |
             Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
