@@ -112,6 +112,22 @@ if [[ $1 == "8.2" ]]; then
   exit 0
 fi
 
+if [[ $1 == "8.3" ]]; then
+  DOCKER_BUILD_ARGUMENTS=()
+  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.3')
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug memcached'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
+  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.3 ."
+  echo $BUILD
+  eval $BUILD
+  exit 0
+fi
+
+
 if [[ $1 == [0-9]\.[0-9] ]]; then
   echo "Version $1 is not supported."
   exit 128
