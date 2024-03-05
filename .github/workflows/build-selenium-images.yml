@@ -22,7 +22,7 @@ jobs:
           - S3FF94
     steps:
       - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v3'
+        uses: 'OXID-eSales/github-actions/build_docker@v4'
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -41,7 +41,7 @@ jobs:
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
-        uses: 'OXID-eSales/github-actions/slack_status@v1'
+        uses: 'OXID-eSales/github-actions/slack_status@v4'
         with:
           slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
           title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
