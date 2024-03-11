@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   push:
+    branches:
+      - master
     paths:
       - 'selenium/**'
       - '.github/workflows/build-selenium-images.yml'
