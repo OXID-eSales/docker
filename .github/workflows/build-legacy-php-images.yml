@@ -18,17 +18,35 @@ jobs:
         php_version: ["7.0", "7.1", "7.2", "7.3"]
         include:
           - php_version: 7.0
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
+            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
+            PHP_EXT_DEPS: "curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
             PECL_DEPS: "pecl install xdebug-2.7.2 memcached"
+            PHP_MEMORY_LIMIT: "-1"
+            GD_CONFIG: "--with-jpeg-dir=/usr/local/ --with-webp"
+            XDEBUG_INI: "xdebug.ini"
           - php_version: 7.1
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
+            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
+            PHP_EXT_DEPS: "curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
             PECL_DEPS: "pecl install xdebug-2.9.8 memcached"
+            PHP_MEMORY_LIMIT: "-1"
+            GD_CONFIG: "--with-jpeg-dir=/usr/local/ --with-webp"
+            XDEBUG_INI: "xdebug.ini"
           - php_version: 7.2
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool bc iproute2 libmemcached-dev openssh-client sshpass"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev zlib1g-dev"
             PECL_DEPS: "pecl install xdebug-2.9.8 memcached"
+            PHP_MEMORY_LIMIT: "-1"
+            GD_CONFIG: "--with-jpeg-dir=/usr/local/ --with-webp"
+            XDEBUG_INI: "xdebug.ini"
           - php_version: 7.3
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev openssh-client sshpass"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
             PECL_DEPS: "pecl install xdebug-2.9.8 memcached"
+            PHP_MEMORY_LIMIT: "-1"
+            GD_CONFIG: "--with-jpeg-dir=/usr/local/ --with-webp"
+            XDEBUG_INI: "xdebug.ini"
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
