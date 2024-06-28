@@ -6,10 +6,6 @@ on:
       php_version:
         type: choice
         options:
-         - "7.0"
-         - "7.1"
-         - "7.2"
-         - "7.3"
 
 jobs:
   build:
@@ -19,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: ${{ fromJSON(inputs.php_version) }}
+        php_version: ["7.0", "7.1", "7.2", "7.3"]
         include:
           - php_version: 7.0
             PECL_DEPS: "pecl install xdebug-2.7.2 memcached"
