@@ -1,9 +1,9 @@
 # Workaround for copy --from not accepting arguments
 ARG COMPOSER_VERSION=2
-FROM composer:$COMPOSER_VERSION as dynamic_composer
+FROM composer:${COMPOSER_VERSION} as dynamic_composer
 
 ARG PHP_VERSION=7.0
-FROM php:$PHP_VERSION-fpm
+FROM php:${PHP_VERSION}-fpm
 
 ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
 ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
