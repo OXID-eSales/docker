@@ -1,4 +1,4 @@
-name: Build php 7.1/7.2/7.3 images and push to Docker Hub
+name: Build php 7.1 image and push to Docker Hub
 
 on:
   workflow_dispatch:
