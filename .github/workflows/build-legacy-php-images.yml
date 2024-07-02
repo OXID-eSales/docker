@@ -25,6 +25,7 @@ jobs:
             PHP_MEMORY_LIMIT: "-1"
             GD_CONFIG: "--with-jpeg-dir=/usr/local/"
             XDEBUG_INI: "xdebug.ini"
+            COMPOSER_VERSION: "2.2"
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
@@ -41,6 +42,7 @@ jobs:
             GD_CONFIG=${{ matrix.GD_CONFIG }}
             PECL_DEPS=${{ matrix.PECL_DEPS }}
             XDEBUG_INI=${{ matrix.XDEBUG_INI }}
+            COMPOSER_VERSION=${{ matrix.COMPOSER_VERSION }}
           tags: |
             oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
 

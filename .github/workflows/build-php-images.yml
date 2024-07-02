@@ -27,6 +27,7 @@ jobs:
             GD_CONFIG: "--with-jpeg=/usr/local/"
             PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
             XDEBUG_INI: "xdebug3.ini"
+            COMPOSER_VERSION: 2
           - php_version: 8.0
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
@@ -34,6 +35,7 @@ jobs:
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp"
             PECL_DEPS: "pecl install xdebug-3.1.3 memcached"
             XDEBUG_INI: "xdebug3.ini"
+            COMPOSER_VERSION: 2
           - php_version: 8.1
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev libavif-dev"
@@ -41,6 +43,7 @@ jobs:
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
             PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
+            COMPOSER_VERSION: 2
           - php_version: 8.2
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
@@ -48,6 +51,7 @@ jobs:
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
             PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
+            COMPOSER_VERSION: 2
           - php_version: 8.3
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
@@ -55,6 +59,7 @@ jobs:
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
             PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
+            COMPOSER_VERSION: 2
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
@@ -71,6 +76,7 @@ jobs:
             GD_CONFIG=${{ matrix.GD_CONFIG }}
             PECL_DEPS=${{ matrix.PECL_DEPS }}
             XDEBUG_INI=${{ matrix.XDEBUG_INI }}
+            COMPOSER_VERSION=${{ matrix.COMPOSER_VERSION }}
           tags: |
             oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
 

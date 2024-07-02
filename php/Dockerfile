@@ -8,6 +8,7 @@ ARG PECL_DEPS="pecl install xdebug memcached"
 ARG PHP_MEMORY_LIMIT="-1"
 ARG GD_CONFIG="--with-jpeg-dir=/usr/local/ --with-webp"
 ARG XDEBUG_INI="xdebug.ini"
+ARG COMPOSER_VERSION=2
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
@@ -46,8 +47,8 @@ RUN ln -s /usr/local/bin/php /usr/bin/php
 # install latest composer v1 as composer1 binary
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 
-# install composer v2.2 as composer2 binary (latest or 2 drops php 7.1)
-COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
+# install latest composer v2 (attention: latest or 2 drops php 7.1)
+COPY --from=composer:$COMPOSER_VERSION /usr/bin/composer /usr/bin/composer
 
 # Workaround for https://oxid-esales.atlassian.net/browse/OXDEV-4797
 RUN echo "php_admin_value[error_log] = /tmp/fpm-php.www.log" >> /usr/local/etc/php-fpm.d/www.conf
