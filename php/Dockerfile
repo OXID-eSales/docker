@@ -1,6 +1,11 @@
 
 ARG COMPOSER_VERSION=2
 ARG PHP_VERSION=7.0
+
+# Workaround for copy --from not accepting arguments
+FROM composer:${COMPOSER_VERSION} as dynamic_composer
+
+FROM php:${PHP_VERSION}-fpm
 ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
 ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
 ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
@@ -8,11 +13,6 @@ ARG PECL_DEPS="pecl install xdebug memcached"
 ARG PHP_MEMORY_LIMIT="-1"
 ARG GD_CONFIG="--with-jpeg-dir=/usr/local/ --with-webp"
 ARG XDEBUG_INI="xdebug.ini"
-
-# Workaround for copy --from not accepting arguments
-FROM composer:${COMPOSER_VERSION} as dynamic_composer
-
-FROM php:${PHP_VERSION}-fpm
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
