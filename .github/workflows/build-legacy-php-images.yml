@@ -2,10 +2,6 @@ name: Build php 7.1/7.2/7.3 images and push to Docker Hub
 
 on:
   workflow_dispatch:
-    inputs:
-      php_version:
-        type: choice
-        options:
 
 jobs:
   build:
