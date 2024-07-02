@@ -4,6 +4,7 @@ if [[ $1 == "5.6" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=5.6')
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.5.5 memcached-2.2.0'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='2.2'")
   BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:5.6 ."
   echo $BUILD
   eval $BUILD
@@ -13,6 +14,7 @@ fi
 if [[ $1 == "7.0" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.7.2 memcached'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='2.2'")
   BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.0 ."
   echo $BUILD
   eval $BUILD
@@ -23,6 +25,7 @@ if [[ $1 == "7.1" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.1')
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.9.8 memcached'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='2.2'")
   BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.1 ."
   echo $BUILD
   eval $BUILD
