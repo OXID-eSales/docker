@@ -1,14 +1,13 @@
-name: Build php images and push to Docker Hub
+name: Manually test php image builds
 
 on:
-  schedule:
-    - cron: '0 0 * * 0'
-  push:
-    branches:
-      - master
-    paths:
-      - 'php/**'
-      - '.github/workflows/build-php-images.yml'
+  workflow_call:
+    inputs:
+      versions:
+        type: string
+        required: true
+        default: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
+        description: Array of versions
 
 jobs:
   build:
@@ -18,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
+        php_version: ${{ fromJSON(inputs.versions) }}
         include:
           - php_version: 7.4
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
@@ -86,7 +85,7 @@ jobs:
             XDEBUG_INI=${{ matrix.XDEBUG_INI }}
             COMPOSER_VERSION=${{ matrix.COMPOSER_VERSION }}
           tags: |
-            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
+            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}-test
 
   finish:
     if: always()
