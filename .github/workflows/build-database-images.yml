@@ -1,0 +1,75 @@
+name: Build MySQL and MariaDB images and push to Docker Hub
+
+on:
+  schedule:
+    - cron: '13 1 * * 0'
+
+  push:
+    branches:
+      - master
+    paths:
+      - 'mysql/**'
+      - 'mariadb/**'
+      - '.github/workflows/build-database-images.yml'
+
+jobs:
+  build_mysql:
+    runs-on: ubuntu-latest
+    env:
+      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
+    strategy:
+      fail-fast: false
+      matrix:
+        mysql_version: ["5.7", "8.0.36", "8.0", "8", "9"]
+    steps:
+      - name: build and push docker images
+        uses: 'OXID-eSales/github-actions/build_docker@v4'
+        with:
+          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          image_name: database
+          platforms: linux/amd64
+          tags: |
+              oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
+          build-args:  |
+            MYSQL_VERSION=${{ matrix.mysql_version }}
+
+  build_mariadb:
+    runs-on: ubuntu-latest
+    env:
+      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
+    strategy:
+      fail-fast: false
+      matrix:
+        mariadb_version: ["10", "11"]
+    steps:
+      - name: build and push docker images
+        uses: 'OXID-eSales/github-actions/build_docker@v4'
+        with:
+          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          image_name: database
+          platforms: linux/amd64
+          tags: |
+              oxidesales/oxideshop-docker-database:${{ matrix.mariadb_version }}
+          build-args:  |
+            MARIADB_VERSION=${{ matrix.mariadb_version }}
+
+  finish:
+    if: always()
+    needs: [build_mysql,build_mariadb]
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"
+    steps:
+      - name: Send custom JSON data to Slack workflow
+        if: ${{ always() && env.SLACK_WEBHOOK != '' }}
+        uses: 'OXID-eSales/github-actions/slack_status@v4'
+        with:
+          slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
+          title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
+          summary_list: |
+            Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          install_list: |
+            mysql%${{ needs.build_mysql.result }}
+            mariadb%${{ needs.build_mariadb.result }}
