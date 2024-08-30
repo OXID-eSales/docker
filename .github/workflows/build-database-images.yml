@@ -30,7 +30,7 @@ jobs:
           image_name: database
           platforms: linux/amd64
           tags: |
-              oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
+              oxidesales/oxideshop-docker-database:mysql-${{ matrix.mysql_version }}
           build-args:  |
             MYSQL_VERSION=${{ matrix.mysql_version }}
 
@@ -51,7 +51,7 @@ jobs:
           image_name: database
           platforms: linux/amd64
           tags: |
-              oxidesales/oxideshop-docker-database:${{ matrix.mariadb_version }}
+              oxidesales/oxideshop-docker-database:mariadb-${{ matrix.mariadb_version }}
           build-args:  |
             MARIADB_VERSION=${{ matrix.mariadb_version }}
 
