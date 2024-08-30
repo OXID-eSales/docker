@@ -30,6 +30,7 @@ jobs:
           image_name: database
           platforms: linux/amd64
           tags: |
+              oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
               oxidesales/oxideshop-docker-database:mysql-${{ matrix.mysql_version }}
           build-args:  |
             MYSQL_VERSION=${{ matrix.mysql_version }}
