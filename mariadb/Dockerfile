@@ -1,5 +1,5 @@
-ARG MARIADB_VERSION
+ARG MARIADB_VERSION=10
 
 FROM mariadb:$MARIADB_VERSION
 
-RUN [[ ! -e /usr/bin/mysqladmin ]] && ln -s /usr/bin/mariadb-admin /usr/bin/mysqladmin
+RUN if [ ! -e /usr/bin/mysqladmin ]; then ; ln -s /usr/bin/mariadb-admin /usr/bin/mysqladmin ; fi
