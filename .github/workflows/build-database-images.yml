@@ -27,7 +27,7 @@ jobs:
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: database
+          image_name: mysql
           platforms: linux/amd64
           tags: |
               oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
@@ -49,7 +49,7 @@ jobs:
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: database
+          image_name: mariadb
           platforms: linux/amd64
           tags: |
               oxidesales/oxideshop-docker-database:mariadb-${{ matrix.mariadb_version }}
