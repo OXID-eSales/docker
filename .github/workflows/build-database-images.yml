@@ -9,6 +9,7 @@ on:
       - master
     paths:
       - 'mysql/**'
+      - 'mysql9/**'
       - 'mariadb/**'
       - '.github/workflows/build-database-images.yml'
 
@@ -28,6 +29,29 @@ jobs:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
           image_name: mysql
+          platforms: linux/amd64
+          tags: |
+              oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
+              oxidesales/oxideshop-docker-database:mysql-${{ matrix.mysql_version }}
+          build-args:  |
+            MYSQL_VERSION=${{ matrix.mysql_version }}
+
+  # There is no -debian tag, so we can't use our usual -debian but have to use -oraclelinux9
+  build_mysql9:
+    runs-on: ubuntu-latest
+    env:
+      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
+    strategy:
+      fail-fast: false
+      matrix:
+        mysql_version: ["9"]
+    steps:
+      - name: build and push docker images
+        uses: 'OXID-eSales/github-actions/build_docker@v4'
+        with:
+          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          image_name: mysql9
           platforms: linux/amd64
           tags: |
               oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
