@@ -13,7 +13,7 @@ RUN \
     if [ ! -e /usr/bin/mysql_setpermission ]; then ln -s mariadb-setpermission /usr/bin/mysql_setpermission ; fi ; \
     if [ ! -e /usr/bin/mysql_tzinfo_to_sql ]; then ln -s /usr/bin/mariadb-tzinfo-to-sql /usr/bin/mysql_tzinfo_to_sql ; fi ; \
     if [ ! -e /usr/bin/mysql_upgrade ]; then ln -s /usr/bin/mariadb-upgrade /usr/bin/mysql_upgrade ; fi ; \
-    if [ ! -e /usr/bin/mysql_waitpid ]; then ln -s /usr/bin/mariadb-waitpidn /usr/bin/mysql_waitpid ; fi ; \
+    if [ ! -e /usr/bin/mysql_waitpid ]; then ln -s /usr/bin/mariadb-waitpid /usr/bin/mysql_waitpid ; fi ; \
     if [ ! -e /usr/bin/mysqlaccess ]; then ln -s /usr/bin/mariadb-access /usr/bin/mysqlaccess ; fi ; \
     if [ ! -e /usr/bin/mysqladmin ]; then ln -s /usr/bin/mariadb-admin /usr/bin/mysqladmin ; fi ; \
     if [ ! -e /usr/bin/mysqlanalyze ]; then ln -s /usr/bin/mariadb-check /usr/bin/mysqlanalyze ; fi ; \
