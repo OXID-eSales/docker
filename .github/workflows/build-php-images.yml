@@ -1,11 +1,9 @@
 name: Build php images and push to Docker Hub
 
 on:
-  schedule:
-    - cron: '0 0 * * 0'
   push:
     branches:
-      - master
+      - master_add_PHP8.4
     paths:
       - 'php/**'
       - '.github/workflows/build-php-images.yml'
