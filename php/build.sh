@@ -11,6 +11,16 @@ if [[ $1 == "5.6" ]]; then
   exit 0
 fi
 
+if [[ $1 == "7.0-composer1" ]]; then
+  DOCKER_BUILD_ARGUMENTS=()
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.7.2 memcached'")
+  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='1.10.27'")
+  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.0-composer1 ."
+  echo $BUILD
+  eval $BUILD
+  exit 0
+fi
+
 if [[ $1 == "7.0" ]]; then
   DOCKER_BUILD_ARGUMENTS=()
   DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.7.2 memcached'")
