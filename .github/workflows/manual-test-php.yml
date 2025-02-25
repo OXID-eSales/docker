@@ -1,7 +1,7 @@
 name: Manually test php image builds
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       versions:
         type: string
