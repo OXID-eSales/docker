@@ -1,4 +1,4 @@
-ARG COMPOSER_VERSION=2.8.5
+ARG COMPOSER_VERSION=2
 ARG PHP_VERSION=7.0
 
 # Workaround for copy --from not accepting arguments
