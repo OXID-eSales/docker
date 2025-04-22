@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mysql_version: ["5.7", "8.0.36", "8.0", "8", "8.4"]
+        mysql_version: ["5.7", "8.0.36", "8.0", "8"]
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
@@ -37,14 +37,14 @@ jobs:
             MYSQL_VERSION=${{ matrix.mysql_version }}
 
   # There is no -debian tag, so we can't use our usual -debian but have to use -oraclelinux9
-  build_mysql9:
+  build_mysql_oracle_linux9:
     runs-on: ubuntu-latest
     env:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
     strategy:
       fail-fast: false
       matrix:
-        mysql_version: ["9"]
+        mysql_version: ["8.4", "9"]
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
