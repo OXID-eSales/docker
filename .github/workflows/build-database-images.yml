@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mysql_version: ["5.7", "8.0.36", "8.0", "8"]
+        mysql_version: ["5.7", "8.0", "8.0.36", "8.4", "8", "9"]
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
@@ -33,30 +33,7 @@ jobs:
           tags: |
               oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
               oxidesales/oxideshop-docker-database:mysql-${{ matrix.mysql_version }}
-          build-args:  |
-            MYSQL_VERSION=${{ matrix.mysql_version }}
-
-  # There is no -debian tag, so we can't use our usual -debian but have to use -oraclelinux9
-  build_mysql_oracle_linux9:
-    runs-on: ubuntu-latest
-    env:
-      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
-    strategy:
-      fail-fast: false
-      matrix:
-        mysql_version: ["8.4", "9"]
-    steps:
-      - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v4'
-        with:
-          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
-          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: mysql9
-          platforms: linux/amd64
-          tags: |
-              oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
-              oxidesales/oxideshop-docker-database:mysql-${{ matrix.mysql_version }}
-          build-args:  |
+          build-args: |
             MYSQL_VERSION=${{ matrix.mysql_version }}
 
   build_mariadb:
@@ -77,12 +54,12 @@ jobs:
           platforms: linux/amd64
           tags: |
               oxidesales/oxideshop-docker-database:mariadb-${{ matrix.mariadb_version }}
-          build-args:  |
+          build-args: |
             MARIADB_VERSION=${{ matrix.mariadb_version }}
 
   finish:
     if: always()
-    needs: [build_mysql,build_mariadb]
+    needs: [build_mysql, build_mariadb]
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"

@@ -1,3 +1,3 @@
 ARG MYSQL_VERSION=8
 
-FROM mysql:${MYSQL_VERSION}-debian
+FROM mysql:${MYSQL_VERSION}-oracle
