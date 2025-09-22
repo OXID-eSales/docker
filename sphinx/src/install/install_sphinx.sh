@@ -30,4 +30,5 @@ rm /usr/lib/python3*/EXTERNALLY-MANAGED
 pip install sphinxcontrib_phpdomain
 pip install pygments-graphql
 pip install git+https://github.com/fabpot/sphinx-php.git
+pip install sphinx-design
 java -jar ./usr/share/plantuml/plantuml.jar -testdot
