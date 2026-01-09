@@ -37,7 +37,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.1
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
@@ -45,7 +45,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.2
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
@@ -53,7 +53,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.3
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
@@ -61,7 +61,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.4
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
@@ -69,7 +69,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.5
-            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
             GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
