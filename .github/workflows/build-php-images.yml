@@ -21,6 +21,7 @@ jobs:
         php_version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
         include:
           - php_version: 7.4
+            FPM_VARIANT: ""
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -29,6 +30,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.0
+            FPM_VARIANT: ""
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -37,6 +39,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.1
+            FPM_VARIANT: "-bookworm"
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -45,6 +48,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.2
+            FPM_VARIANT: "-bookworm"
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -53,6 +57,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.3
+            FPM_VARIANT: "-bookworm"
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -61,6 +66,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.4
+            FPM_VARIANT: "-bookworm"
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -69,6 +75,7 @@ jobs:
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
           - php_version: 8.5
+            FPM_VARIANT: "-bookworm"
             RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
             BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
             PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
@@ -86,6 +93,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
+            FPM_VARIANT=${{ matrix.FPM_VARIANT }}
             RUNTIME_PACKAGE_DEPS=${{ matrix.RUNTIME_PACKAGE_DEPS }}
             BUILD_PACKAGE_DEPS=${{ matrix.BUILD_PACKAGE_DEPS }}
             PHP_EXT_DEPS=${{ matrix.PHP_EXT_DEPS }}

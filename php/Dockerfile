@@ -1,10 +1,11 @@
 ARG COMPOSER_VERSION=2
 ARG PHP_VERSION=7.0
+ARG FPM_VARIANT=""
 
 # Workaround for copy --from not accepting arguments
 FROM composer:${COMPOSER_VERSION} as dynamic_composer
 
-FROM php:${PHP_VERSION}-fpm-bookworm
+FROM php:${PHP_VERSION}-fpm${FPM_VARIANT}
 ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
 ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
 ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
