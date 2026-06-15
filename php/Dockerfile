@@ -38,9 +38,12 @@ RUN echo "memory_limit = $PHP_MEMORY_LIMIT" > /usr/local/etc/php/conf.d/memory-l
 # enable error log by default
 RUN echo "log_errors = On" > /usr/local/etc/php/conf.d/error-log-php.ini
 
-# prepare optional xdebug ini
+# prepare optional xdebug ini, failing the build if xdebug isn't installed or won't load
 COPY resources/$XDEBUG_INI /usr/optional_xdebug.ini
-RUN sed -i "s~locate_extension~$(find /usr/local/lib/php/extensions/ -name xdebug.so)~" /usr/optional_xdebug.ini
+RUN XDEBUG_SO="$(find /usr/local/lib/php/extensions/ -name xdebug.so)" \
+      && test -n "$XDEBUG_SO" \
+      && php -d zend_extension="$XDEBUG_SO" -m | grep -qi xdebug \
+	  && sed -i "s~locate_extension~$XDEBUG_SO~" /usr/optional_xdebug.ini
 
 # prepare optional memcached ini
 RUN echo "extension=memcached.so" > /usr/optional_memcached.ini
