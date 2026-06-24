@@ -1,15 +1,27 @@
-# Set update schedule for GitHub Actions
+---
+# Dependabot update schedule (weekly, Monday 06:00 Europe/Berlin; grouped per ecosystem)
 
 version: 2
 updates:
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every weekday
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    groups:
+      github-actions:
+        patterns: ["*"]
 
   - package-ecosystem: "docker"
-    directory: "/"
+    directories:
+      - "/**"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    groups:
+      docker:
+        patterns: ["*"]
