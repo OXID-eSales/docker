@@ -1,4 +1,4 @@
-FROM selenium/node-base:4.13.0
+FROM selenium/node-base:4.45.0
 COPY src /
 USER root
 
