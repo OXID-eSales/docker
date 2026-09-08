@@ -23,6 +23,7 @@ fi
 apt-get install -y --no-install-recommends \
     shellcheck \
     build-essential \
+    dirmngr \
     docker-compose-v2 \
     pipx \
     python-is-python3 \

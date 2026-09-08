@@ -7,6 +7,7 @@ Based on `ghcr.io/actions/actions-runner:latest` with additional tools installed
 - **gh**: GitHub CLI
 - **shellcheck**: Shell script static analysis
 - **build-essential**: make, gcc, and other compilation tools
+- **dirmngr**: GnuPG keyserver access (needed for GPG signature verification, e.g. the SonarQube scanner)
 - **docker-compose-v2**: Docker Compose via `docker compose` CLI
 - **python-is-python3**: Makes `python` point to `python3`
 - **python3-yaml**: Python YAML library
