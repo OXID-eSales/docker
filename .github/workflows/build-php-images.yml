@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+        php_version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6-rc"]
         include:
           - php_version: 7.4
             FPM_VARIANT: ""
@@ -83,6 +83,16 @@ jobs:
             PECL_DEPS: "pecl install xdebug memcached"
             XDEBUG_INI: "xdebug3.ini"
             COMPOSER_VERSION: 2
+          - php_version: 8.6-rc
+            FPM_VARIANT: "-trixie"
+            RUNTIME_PACKAGE_DEPS: "msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+            BUILD_PACKAGE_DEPS: "libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
+            PHP_EXT_DEPS: "zip bcmath soap pdo_mysql gd mysqli"
+            GD_CONFIG: "--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
+            PECL_DEPS: "true"
+            XDEBUG_FROM_SOURCE: "true"
+            XDEBUG_INI: "xdebug3.ini"
+            COMPOSER_VERSION: 2
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v4'
@@ -99,6 +109,7 @@ jobs:
             PHP_EXT_DEPS=${{ matrix.PHP_EXT_DEPS }}
             GD_CONFIG=${{ matrix.GD_CONFIG }}
             PECL_DEPS=${{ matrix.PECL_DEPS }}
+            XDEBUG_FROM_SOURCE=${{ matrix.XDEBUG_FROM_SOURCE }}
             XDEBUG_INI=${{ matrix.XDEBUG_INI }}
             COMPOSER_VERSION=${{ matrix.COMPOSER_VERSION }}
           tags: |

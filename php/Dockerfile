@@ -13,6 +13,8 @@ ARG PECL_DEPS="pecl install xdebug memcached"
 ARG PHP_MEMORY_LIMIT="-1"
 ARG GD_CONFIG="--with-jpeg-dir=/usr/local/ --with-webp"
 ARG XDEBUG_INI="xdebug.ini"
+ARG XDEBUG_FROM_SOURCE="false"
+ARG XDEBUG_SOURCE_REF="master"
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
@@ -28,6 +30,22 @@ RUN apt-get update -y \
     && apt-get purge -y --auto-remove $BUILD_PACKAGE_DEPS \
     && usermod -a -G root www-data && usermod -a -G www-data root \
     && rm -rf /var/lib/apt/lists/*
+
+# optionally build Xdebug from source where pecl is unavailable (e.g. PHP 8.6); no-op otherwise
+RUN if [ "$XDEBUG_FROM_SOURCE" = "true" ]; then \
+        apt-get update -y \
+        && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $PHPIZE_DEPS git \
+        && git clone --depth 1 --branch "$XDEBUG_SOURCE_REF" https://github.com/xdebug/xdebug.git /tmp/xdebug \
+        && cd /tmp/xdebug \
+        && phpize \
+        && ./configure --enable-xdebug \
+        && make -j"$(nproc)" \
+        && make install \
+        && cd / && rm -rf /tmp/xdebug \
+        && apt-get purge -y --auto-remove $PHPIZE_DEPS git \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
 
 # set sendmail for php to msmtp
 RUN echo "sendmail_path=/usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/php-sendmail.ini
