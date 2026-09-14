@@ -10,6 +10,9 @@ on:
       - 'selenium/**'
       - '.github/workflows/build-selenium-images.yml'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
           - S3FF94
     steps:
       - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v4'
+        uses: 'OXID-eSales/github-actions/build_docker@v5'
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -43,11 +46,9 @@ jobs:
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
-        uses: 'OXID-eSales/github-actions/slack_status@v4'
+        uses: slackapi/slack-github-action@v4
         with:
-          slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
-          title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
-          summary_list: |
-            Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          install_list: |
-            build%${{ needs.build.result }}
+          webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": "${{ github.workflow }} on ${{ github.repository }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Summary>) ${{ needs.build.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build.result }}"}

@@ -9,5 +9,7 @@ Changes contain:
 - Removing memory limits on PHP
 - Installing Xdebug and provide an option to enable it
 - Installing Composer
+- Installing PIE (the pecl successor) for adding further extensions (not on 8.6-rc)
+- Skipping server certificate verification in the mysql/mariadb clients, as the dev databases use self-signed certificates
 
-To build locally use ./build.sh [Major].[Minor] a.e. `./build.sh 7.1`
+To build locally use ./build.sh [Major].[Minor], e.g. `./build.sh 8.4`

@@ -1,20 +1,23 @@
 ARG COMPOSER_VERSION=2
-ARG PHP_VERSION=7.0
-ARG FPM_VARIANT=""
+ARG PHP_VERSION=8.4
+ARG FPM_VARIANT="-trixie"
 
 # Workaround for copy --from not accepting arguments
-FROM composer:${COMPOSER_VERSION} as dynamic_composer
+FROM composer:${COMPOSER_VERSION} AS dynamic_composer
 
 FROM php:${PHP_VERSION}-fpm${FPM_VARIANT}
-ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
-ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
-ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
-ARG PECL_DEPS="pecl install xdebug memcached"
+# package and extension lists are set per version in build.sh
+ARG RUNTIME_PACKAGE_DEPS=""
+ARG BUILD_PACKAGE_DEPS=""
+ARG PHP_EXT_DEPS=""
 ARG PHP_MEMORY_LIMIT="-1"
-ARG GD_CONFIG="--with-jpeg-dir=/usr/local/ --with-webp"
-ARG XDEBUG_INI="xdebug.ini"
+ARG GD_CONFIG=""
+ARG XDEBUG_INI="xdebug3.ini"
 ARG XDEBUG_FROM_SOURCE="false"
 ARG XDEBUG_SOURCE_REF="master"
+ARG PIE_VERSION="1.5.3"
+ARG PIE_SHA256="34a1315073b6089d4cdf4cc5a8295ecc6d36cfde683ef785582f7da0d74f127b"
+ARG PIE_PACKAGES=""
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
@@ -23,7 +26,6 @@ RUN apt-get update -y \
         $BUILD_PACKAGE_DEPS \
     && docker-php-ext-configure gd $GD_CONFIG \
     && docker-php-ext-install -j$(nproc) $PHP_EXT_DEPS \
-    && $PECL_DEPS \
     && docker-php-source delete \
     && apt-get clean \
     && apt-get autoremove -y \
@@ -47,6 +49,14 @@ RUN if [ "$XDEBUG_FROM_SOURCE" = "true" ]; then \
         && rm -rf /var/lib/apt/lists/*; \
     fi
 
+# install extensions with PIE (the pecl successor) and keep it in the image; no-op without PIE_PACKAGES
+RUN if [ -n "$PIE_PACKAGES" ]; then \
+        curl -fsSL -o /usr/local/bin/pie "https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar" \
+        && echo "$PIE_SHA256  /usr/local/bin/pie" | sha256sum -c - \
+        && chmod +x /usr/local/bin/pie \
+        && for package in $PIE_PACKAGES; do pie install --no-interaction --skip-enable-extension "$package"; done; \
+    fi
+
 # set sendmail for php to msmtp
 RUN echo "sendmail_path=/usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/php-sendmail.ini
 
@@ -61,18 +71,26 @@ COPY resources/$XDEBUG_INI /usr/optional_xdebug.ini
 RUN XDEBUG_SO="$(find /usr/local/lib/php/extensions/ -name xdebug.so)" \
       && test -n "$XDEBUG_SO" \
       && php -d zend_extension="$XDEBUG_SO" -m | grep -qi xdebug \
-	  && sed -i "s~locate_extension~$XDEBUG_SO~" /usr/optional_xdebug.ini
+      && sed -i "s~locate_extension~$XDEBUG_SO~" /usr/optional_xdebug.ini
 
-# prepare optional memcached ini
-RUN echo "extension=memcached.so" > /usr/optional_memcached.ini
+# prepare optional memcached ini, failing the build if memcached was requested but won't load
+RUN echo "extension=memcached.so" > /usr/optional_memcached.ini \
+    && case "$PIE_PACKAGES" in *memcached*) php -d extension=memcached.so -r 'exit(extension_loaded("memcached") ? 0 : 1);' ;; esac
 
 # add symlink to provide php also from /usr/bin
 RUN ln -s /usr/local/bin/php /usr/bin/php
 
+# skip server certificate verification in mysql clients, as the dev databases use self-signed certificates
+COPY resources/mysql-client-wrapper.sh /usr/local/bin/mysql-client-wrapper
+RUN chmod +x /usr/local/bin/mysql-client-wrapper \
+    && for tool in mysql mysqldump mysqladmin mysqlimport mysqlcheck mariadb mariadb-dump mariadb-admin mariadb-import mariadb-check; do \
+        if [ -e "/usr/bin/$tool" ]; then ln -s mysql-client-wrapper "/usr/local/bin/$tool"; fi; \
+    done
+
 # install latest composer v1 as composer1 binary
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 
-# install latest composer v2 (attention: latest or 2 drops php 7.1)
+# install latest composer v2
 COPY --from=dynamic_composer /usr/bin/composer /usr/bin/composer
 
 # Workaround for https://oxid-esales.atlassian.net/browse/OXDEV-4797
