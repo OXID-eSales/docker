@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6-rc"]
+        php_version: ["8.6-rc"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -33,16 +33,24 @@ jobs:
             echo 'BUILD_ARGS_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v4'
-        with:
-          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
-          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: php
-          platforms: linux/amd64,linux/arm64
-          build-args: ${{ steps.args.outputs.build_args }}
-          tags: |
-            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
+      - name: 'DRY RUN: show what build_docker would receive'
+        env:
+          BUILD_ARGS: ${{ steps.args.outputs.build_args }}
+        run: |
+          echo "image: oxidesales/oxideshop-docker-php:${{ matrix.php_version }}"
+          echo "build-args:"
+          printf '%s\n' "$BUILD_ARGS"
+
+#      - name: build and push docker images
+#        uses: 'OXID-eSales/github-actions/build_docker@v4'
+#        with:
+#          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+#          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+#          image_name: php
+#          platforms: linux/amd64,linux/arm64
+#          build-args: ${{ steps.args.outputs.build_args }}
+#          tags: |
+#            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
 
   finish:
     if: always()

@@ -1,20 +1,7 @@
-name: Manually test php image builds
+name: Build php images and push to Docker Hub
 
 on:
   workflow_dispatch:
-    inputs:
-      versions:
-        type: string
-        required: true
-        default: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6-rc"]'
-        description: Array of versions
-  workflow_call:
-    inputs:
-      versions:
-        type: string
-        required: true
-        default: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6-rc"]'
-        description: Array of versions
 
 jobs:
   build:
@@ -24,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: ${{ fromJSON(inputs.versions) }}
+        php_version: ["8.6-rc"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -38,16 +25,24 @@ jobs:
             echo 'BUILD_ARGS_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v4'
-        with:
-          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
-          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: php
-          platforms: linux/amd64,linux/arm64
-          build-args: ${{ steps.args.outputs.build_args }}
-          tags: |
-            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}-test
+      - name: 'DRY RUN: show what build_docker would receive'
+        env:
+          BUILD_ARGS: ${{ steps.args.outputs.build_args }}
+        run: |
+          echo "image: oxidesales/oxideshop-docker-php:${{ matrix.php_version }}"
+          echo "build-args:"
+          printf '%s\n' "$BUILD_ARGS"
+
+  #      - name: build and push docker images
+  #        uses: 'OXID-eSales/github-actions/build_docker@v4'
+  #        with:
+  #          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+  #          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+  #          image_name: php
+  #          platforms: linux/amd64,linux/arm64
+  #          build-args: ${{ steps.args.outputs.build_args }}
+  #          tags: |
+  #            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
 
   finish:
     if: always()
