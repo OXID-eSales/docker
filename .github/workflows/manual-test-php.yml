@@ -25,24 +25,16 @@ jobs:
             echo 'BUILD_ARGS_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      - name: 'DRY RUN: show what build_docker would receive'
-        env:
-          BUILD_ARGS: ${{ steps.args.outputs.build_args }}
-        run: |
-          echo "image: oxidesales/oxideshop-docker-php:${{ matrix.php_version }}"
-          echo "build-args:"
-          printf '%s\n' "$BUILD_ARGS"
-
-  #      - name: build and push docker images
-  #        uses: 'OXID-eSales/github-actions/build_docker@v4'
-  #        with:
-  #          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
-  #          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-  #          image_name: php
-  #          platforms: linux/amd64,linux/arm64
-  #          build-args: ${{ steps.args.outputs.build_args }}
-  #          tags: |
-  #            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
+      - name: build and push docker images
+        uses: 'OXID-eSales/github-actions/build_docker@v4'
+        with:
+          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          image_name: php
+          platforms: linux/amd64,linux/arm64
+          build-args: ${{ steps.args.outputs.build_args }}
+          tags: |
+            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
 
   finish:
     if: always()
