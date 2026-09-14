@@ -1,191 +1,120 @@
 #!/bin/bash
 
-if [[ $1 == "5.6" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=5.6')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.5.5 memcached-2.2.0'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='2.2'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:5.6 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
+# Usage:
+#   ./build.sh <version>              build the image locally (single-arch)
+#   ./build.sh --emit-args <version>  print the build-args (KEY=value per line)
+#                                     for the CI workflow to feed into build_docker
+
+set -euo pipefail
+
+IMAGE="oxidesales/oxideshop-docker-php"
+
+usage() {
+    echo "Usage: $0 [--emit-args] <PHP version, e.g. 8.4>" >&2
+    exit 128
+}
+
+MODE="build"
+if [[ "${1:-}" == "--emit-args" ]]; then
+    MODE="emit"
+    shift
 fi
 
-if [[ $1 == "7.0" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.7.2 memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='2.2'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.0 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
+VERSION="${1:-}"
+[[ -n "${VERSION}" ]] || usage
+
+# Populate ARGS (KEY=value entries) for the requested version.
+ARGS=()
+case "${VERSION}" in
+5.6)
+    ARGS=(
+        "PHP_VERSION=5.6"
+        "PECL_DEPS=pecl install xdebug-2.5.5 memcached-2.2.0"
+        "COMPOSER_VERSION=2.2"
+    ) ;;
+7.0)
+    ARGS=(
+        "PHP_VERSION=7.0"
+        "PECL_DEPS=pecl install xdebug-2.7.2 memcached"
+        "COMPOSER_VERSION=2.2"
+    ) ;;
+7.1)
+    ARGS=(
+        "PHP_VERSION=7.1"
+        "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
+        "COMPOSER_VERSION=2.2"
+    ) ;;
+7.2)
+    ARGS=(
+        "PHP_VERSION=7.2"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool bc iproute2 libmemcached-dev openssh-client sshpass"
+        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev zlib1g-dev"
+        "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
+    ) ;;
+7.3)
+    ARGS=(
+        "PHP_VERSION=7.3"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev openssh-client sshpass"
+        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
+        "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
+    ) ;;
+7.4)
+    ARGS=(
+        "PHP_VERSION=7.4"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
+        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
+        "GD_CONFIG=--with-jpeg=/usr/local/"
+        "PECL_DEPS=pecl install xdebug-3.1.3 memcached"
+        "XDEBUG_INI=xdebug3.ini"
+    ) ;;
+8.0)
+    ARGS=(
+        "PHP_VERSION=8.0"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
+        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
+        "PHP_EXT_DEPS=zip bcmath soap pdo_mysql gd mysqli"
+        "GD_CONFIG=--with-jpeg=/usr/local/ --with-webp"
+        "PECL_DEPS=pecl install xdebug-3.1.3 memcached"
+        "XDEBUG_INI=xdebug3.ini"
+    ) ;;
+8.1|8.2|8.3|8.4|8.5)
+    ARGS=(
+        "PHP_VERSION=${VERSION}"
+        "FPM_VARIANT=-bookworm"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
+        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
+        "PHP_EXT_DEPS=zip bcmath soap pdo_mysql gd mysqli"
+        "GD_CONFIG=--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
+        "PECL_DEPS=pecl install xdebug memcached"
+        "XDEBUG_INI=xdebug3.ini"
+    ) ;;
+8.6-rc)
+    ARGS=(
+        "PHP_VERSION=8.6-rc"
+        "FPM_VARIANT=-trixie"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
+        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
+        "PHP_EXT_DEPS=zip bcmath soap pdo_mysql gd mysqli"
+        "GD_CONFIG=--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
+        "PECL_DEPS=true"
+        "XDEBUG_FROM_SOURCE=true"
+        "XDEBUG_INI=xdebug3.ini"
+    ) ;;
+*)
+    echo "Version ${VERSION} is not supported." >&2
+    exit 128 ;;
+esac
+
+if [[ "${MODE}" == "emit" ]]; then
+    printf '%s\n' "${ARGS[@]}"
+    exit 0
 fi
 
-if [[ $1 == "7.1" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.1')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.9.8 memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg COMPOSER_VERSION='2.2'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.1 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
+# Local build: turn each KEY=value into a --build-arg and build single-arch.
+BUILD_ARGS=()
+for arg in "${ARGS[@]}"; do
+    BUILD_ARGS+=(--build-arg "${arg}")
+done
 
-if [[ $1 == "7.2" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.2')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool bc iproute2 libmemcached-dev openssh-client sshpass'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev zlib1g-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.9.8 memcached'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.2 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "7.3" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.3')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev openssh-client sshpass'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-2.9.8 memcached'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.3 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "7.4" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=7.4')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-3.1.3 memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:7.4 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.0" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.0')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug-3.1.3 memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.0 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.1" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.1')
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg FPM_VARIANT="-bookworm"')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev libavif-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.1 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.2" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.2')
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg FPM_VARIANT="-bookworm"')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.2 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.3" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.3')
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg FPM_VARIANT="-bookworm"')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.3 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.4" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.4')
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg FPM_VARIANT="-bookworm"')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.4 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.5" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.5')
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg FPM_VARIANT="-bookworm"')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='pecl install xdebug memcached'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.5 ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == "8.6-rc" ]]; then
-  DOCKER_BUILD_ARGUMENTS=()
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg PHP_VERSION=8.6-rc')
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg FPM_VARIANT="-trixie"')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg RUNTIME_PACKAGE_DEPS='msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg BUILD_PACKAGE_DEPS='libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PHP_EXT_DEPS='zip bcmath soap pdo_mysql gd mysqli'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg GD_CONFIG='--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif'")
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg PECL_DEPS='true'")
-  DOCKER_BUILD_ARGUMENTS+=('--build-arg XDEBUG_FROM_SOURCE=true')
-  DOCKER_BUILD_ARGUMENTS+=("--build-arg XDEBUG_INI='xdebug3.ini'")
-  BUILD="docker build --no-cache ${DOCKER_BUILD_ARGUMENTS[*]} -t oxidesales/oxideshop-docker-php:8.6-rc ."
-  echo $BUILD
-  eval $BUILD
-  exit 0
-fi
-
-if [[ $1 == [0-9]\.[0-9] ]]; then
-  echo "Version $1 is not supported."
-  exit 128
-fi
-
-echo "Usage: provide one argument specifying the PHP version in the format Major.Minor (a.e. 7.0)!"
-exit 128
+set -x
+docker build --no-cache "${BUILD_ARGS[@]}" -t "${IMAGE}:${VERSION}" .
