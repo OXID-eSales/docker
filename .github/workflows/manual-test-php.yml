@@ -1,4 +1,4 @@
-name: Build nginx images and push to Docker Hub
+name: Build codeception image and push to Docker Hub
 
 on:
   workflow_dispatch:
@@ -8,22 +8,17 @@ jobs:
     runs-on: ubuntu-26.04
     env:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
-    strategy:
-      fail-fast: false
-      matrix:
-        nginx_version: ["1.24"]
     steps:
-      - name: build and push docker images
+      - name: build docker images
         uses: 'OXID-eSales/github-actions/build_docker@v5'
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: nginx
-          platforms: linux/amd64,linux/arm64
+          image_name: codeception
+          platforms: linux/amd64
           tags: |
-            oxidesales/oxideshop-docker-nginx:${{ matrix.nginx_version }}
-          build-args: |
-            NGINX_VERSION=${{ matrix.nginx_version }}
+            oxidesales/oxideshop-docker-codeception:latest
+          build-args: ''
 
   finish:
     if: always()
