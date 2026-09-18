@@ -1,56 +1,45 @@
-name: Build MySQL and MariaDB images and push to Docker Hub
+name: Build php images and push to Docker Hub
 
 on:
   workflow_dispatch:
 
 jobs:
-  build_mysql:
+  build:
     runs-on: ubuntu-latest
     env:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
     strategy:
       fail-fast: false
       matrix:
-        mysql_version: ["5.7"]
+        php_version: ["8.1", "8.6-rc"]
     steps:
-      - name: build and push docker images
-        uses: 'OXID-eSales/github-actions/build_docker@v5'
-        with:
-          dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
-          dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: mysql
-          platforms: linux/amd64
-          tags: |
-              oxidesales/oxideshop-docker-database:${{ matrix.mysql_version }}
-              oxidesales/oxideshop-docker-database:mysql-${{ matrix.mysql_version }}
-          build-args: |
-            MYSQL_VERSION=${{ matrix.mysql_version }}
+      - name: Checkout repository
+        uses: actions/checkout@v7
 
-  build_mariadb:
-    runs-on: ubuntu-26.04
-    env:
-      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
-    strategy:
-      fail-fast: false
-      matrix:
-        mariadb_version: ["10"]
-    steps:
+      - name: Resolve build args
+        id: args
+        run: |
+          {
+            echo 'build_args<<BUILD_ARGS_EOF'
+            bash php/build.sh --emit-args '${{ matrix.php_version }}'
+            echo 'BUILD_ARGS_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v5'
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: mariadb
-          platforms: linux/amd64
+          image_name: php
+          platforms: linux/amd64,linux/arm64
+          build-args: ${{ steps.args.outputs.build_args }}
           tags: |
-              oxidesales/oxideshop-docker-database:mariadb-${{ matrix.mariadb_version }}
-          build-args: |
-            MARIADB_VERSION=${{ matrix.mariadb_version }}
+            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}
 
   finish:
     if: always()
-    needs: [build_mysql, build_mariadb]
-    runs-on: ubuntu-26.04
+    needs: build
+    runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"
     steps:
@@ -61,4 +50,4 @@ jobs:
           webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            {"text": "${{ github.workflow }} on ${{ github.repository }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Summary>) mysql ${{ needs.build_mysql.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build_mysql.result }}, mariadb ${{ needs.build_mariadb.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build_mariadb.result }}"}
+            {"text": "${{ github.workflow }} on ${{ github.repository }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Summary>) ${{ needs.build.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build.result }}"}
