@@ -66,12 +66,9 @@ jobs:
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
-        uses: 'OXID-eSales/github-actions/slack_status@v4'
+        uses: slackapi/slack-github-action@v4
         with:
-          slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
-          title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
-          summary_list: |
-            Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          install_list: |
-            mysql%${{ needs.build_mysql.result }}
-            mariadb%${{ needs.build_mariadb.result }}
+          webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": "${{ github.workflow }} on ${{ github.repository }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Summary>) mysql ${{ needs.build_mysql.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build_mysql.result }}, mariadb ${{ needs.build_mariadb.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build_mariadb.result }}"}
