@@ -1,53 +1,24 @@
-name: Manually test php image builds
+name: Build sphinx image and push to Docker Hub
 
 on:
   workflow_dispatch:
-    inputs:
-      versions:
-        type: string
-        required: true
-        default: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6-rc"]'
-        description: Array of versions
-  workflow_call:
-    inputs:
-      versions:
-        type: string
-        required: true
-        default: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5", "8.6-rc"]'
-        description: Array of versions
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
-    strategy:
-      fail-fast: false
-      matrix:
-        php_version: ${{ fromJSON(inputs.versions) }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Resolve build args
-        id: args
-        run: |
-          {
-            echo 'build_args<<BUILD_ARGS_EOF'
-            bash php/build.sh --emit-args '${{ matrix.php_version }}'
-            echo 'BUILD_ARGS_EOF'
-          } >> "$GITHUB_OUTPUT"
-
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v5'
         with:
           dockerhub_username: ${{ secrets.DOCKER_HUB_USER }}
           dockerhub_password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          image_name: php
+          image_name: sphinx
           platforms: linux/amd64,linux/arm64
-          build-args: ${{ steps.args.outputs.build_args }}
           tags: |
-            oxidesales/oxideshop-docker-php:${{ matrix.php_version }}-test
+            oxidesales/oxideshop-docker-sphinx:latest
+          build-args: ''
 
   finish:
     if: always()
@@ -58,11 +29,9 @@ jobs:
     steps:
       - name: Send custom JSON data to Slack workflow
         if: ${{ always() && env.SLACK_WEBHOOK != '' }}
-        uses: 'OXID-eSales/github-actions/slack_status@v4'
+        uses: slackapi/slack-github-action@v4
         with:
-          slack_webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
-          title: '${{ github.workflow }} on ${{ github.repository }} by ${{ github.actor }}'
-          summary_list: |
-            Repository%${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          install_list: |
-            build%${{ needs.build.result }}
+          webhook: ${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": "${{ github.workflow }} on ${{ github.repository }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Summary>) ${{ needs.build.result == 'success' && ':white_check_mark:' || ':x:' }} ${{ needs.build.result }}"}
