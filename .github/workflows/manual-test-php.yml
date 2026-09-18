@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
     steps:
@@ -23,7 +23,7 @@ jobs:
   finish:
     if: always()
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       SLACK_WEBHOOK: "${{ secrets.SLACK_DEVOPS_WEBHOOK_URL }}"
     steps:
