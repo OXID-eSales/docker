@@ -80,8 +80,8 @@ case "${VERSION}" in
 8.1|8.2|8.3|8.4|8.5)
     ARGS=(
         "PHP_VERSION=${VERSION}"
-        "FPM_VARIANT=-bookworm"
-        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif15"
+        "FPM_VARIANT=-trixie"
+        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo libwebp-dev unzip git default-mysql-client sudo rsync lz4 libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libssl-dev libgd3 libavif16"
         "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
         "PHP_EXT_DEPS=zip bcmath soap pdo_mysql gd mysqli"
         "GD_CONFIG=--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
