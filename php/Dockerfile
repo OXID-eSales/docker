@@ -69,6 +69,13 @@ RUN echo "extension=memcached.so" > /usr/optional_memcached.ini
 # add symlink to provide php also from /usr/bin
 RUN ln -s /usr/local/bin/php /usr/bin/php
 
+# skip server certificate verification in mysql clients, as the dev databases use self-signed certificates
+COPY resources/mysql-client-wrapper.sh /usr/local/bin/mysql-client-wrapper
+RUN chmod +x /usr/local/bin/mysql-client-wrapper \
+    && for tool in mysql mysqldump mysqladmin mysqlimport mysqlcheck mariadb mariadb-dump mariadb-admin mariadb-import mariadb-check; do \
+        if [ -e "/usr/bin/$tool" ]; then ln -s mysql-client-wrapper "/usr/local/bin/$tool"; fi; \
+    done
+
 # install latest composer v1 as composer1 binary
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 
