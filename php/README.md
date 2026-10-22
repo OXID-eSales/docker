@@ -10,4 +10,4 @@ Changes contain:
 - Installing Xdebug and provide an option to enable it
 - Installing Composer
 
-To build locally use ./build.sh [Major].[Minor] a.e. `./build.sh 7.1`
+To build locally use ./build.sh [Major].[Minor] a.e. `./build.sh 8.4`

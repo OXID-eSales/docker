@@ -26,38 +26,6 @@ VERSION="${1:-}"
 # Populate ARGS (KEY=value entries) for the requested version.
 ARGS=()
 case "${VERSION}" in
-5.6)
-    ARGS=(
-        "PHP_VERSION=5.6"
-        "PECL_DEPS=pecl install xdebug-2.5.5 memcached-2.2.0"
-        "COMPOSER_VERSION=2.2"
-    ) ;;
-7.0)
-    ARGS=(
-        "PHP_VERSION=7.0"
-        "PECL_DEPS=pecl install xdebug-2.7.2 memcached"
-        "COMPOSER_VERSION=2.2"
-    ) ;;
-7.1)
-    ARGS=(
-        "PHP_VERSION=7.1"
-        "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
-        "COMPOSER_VERSION=2.2"
-    ) ;;
-7.2)
-    ARGS=(
-        "PHP_VERSION=7.2"
-        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool bc iproute2 libmemcached-dev openssh-client sshpass"
-        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev zlib1g-dev"
-        "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
-    ) ;;
-7.3)
-    ARGS=(
-        "PHP_VERSION=7.3"
-        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev openssh-client sshpass"
-        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
-        "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
-    ) ;;
 8.1|8.2|8.3|8.4|8.5)
     ARGS=(
         "PHP_VERSION=${VERSION}"
