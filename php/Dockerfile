@@ -63,8 +63,9 @@ RUN XDEBUG_SO="$(find /usr/local/lib/php/extensions/ -name xdebug.so)" \
       && php -d zend_extension="$XDEBUG_SO" -m | grep -qi xdebug \
 	  && sed -i "s~locate_extension~$XDEBUG_SO~" /usr/optional_xdebug.ini
 
-# prepare optional memcached ini
-RUN echo "extension=memcached.so" > /usr/optional_memcached.ini
+# prepare optional memcached ini, failing the build if memcached was requested but won't load
+RUN echo "extension=memcached.so" > /usr/optional_memcached.ini \
+    && case "$PECL_DEPS" in *memcached*) php -d extension=memcached.so -r 'exit(extension_loaded("memcached") ? 0 : 1);' ;; esac
 
 # add symlink to provide php also from /usr/bin
 RUN ln -s /usr/local/bin/php /usr/bin/php
