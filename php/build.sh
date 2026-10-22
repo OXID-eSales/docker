@@ -58,25 +58,6 @@ case "${VERSION}" in
         "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
         "PECL_DEPS=pecl install xdebug-2.9.8 memcached"
     ) ;;
-7.4)
-    ARGS=(
-        "PHP_VERSION=7.4"
-        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
-        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev"
-        "GD_CONFIG=--with-jpeg=/usr/local/"
-        "PECL_DEPS=pecl install xdebug-3.1.3 memcached"
-        "XDEBUG_INI=xdebug3.ini"
-    ) ;;
-8.0)
-    ARGS=(
-        "PHP_VERSION=8.0"
-        "RUNTIME_PACKAGE_DEPS=msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool libzip-dev bc iproute2 libmemcached-dev libonig-dev openssh-client sshpass libgd3"
-        "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev"
-        "PHP_EXT_DEPS=zip bcmath soap pdo_mysql gd mysqli"
-        "GD_CONFIG=--with-jpeg=/usr/local/ --with-webp"
-        "PECL_DEPS=pecl install xdebug-3.1.3 memcached"
-        "XDEBUG_INI=xdebug3.ini"
-    ) ;;
 8.1|8.2|8.3|8.4|8.5)
     ARGS=(
         "PHP_VERSION=${VERSION}"
