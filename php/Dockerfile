@@ -15,6 +15,8 @@ ARG GD_CONFIG="--with-jpeg-dir=/usr/local/ --with-webp"
 ARG XDEBUG_INI="xdebug.ini"
 ARG XDEBUG_FROM_SOURCE="false"
 ARG XDEBUG_SOURCE_REF="master"
+ARG PIE_VERSION="1.5.3"
+ARG PIE_PACKAGES=""
 
 # install dependencies and cleanup (needs to be one step, as else it will cache in the layer)
 RUN apt-get update -y \
@@ -47,6 +49,13 @@ RUN if [ "$XDEBUG_FROM_SOURCE" = "true" ]; then \
         && rm -rf /var/lib/apt/lists/*; \
     fi
 
+# install extensions with PIE (the pecl successor) and keep it in the image; no-op without PIE_PACKAGES
+RUN if [ -n "$PIE_PACKAGES" ]; then \
+        curl -fsSL -o /usr/local/bin/pie "https://github.com/php/pie/releases/download/$PIE_VERSION/pie.phar" \
+        && chmod +x /usr/local/bin/pie \
+        && for package in $PIE_PACKAGES; do pie install --no-interaction --skip-enable-extension "$package"; done; \
+    fi
+
 # set sendmail for php to msmtp
 RUN echo "sendmail_path=/usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/php-sendmail.ini
 
@@ -65,7 +74,7 @@ RUN XDEBUG_SO="$(find /usr/local/lib/php/extensions/ -name xdebug.so)" \
 
 # prepare optional memcached ini, failing the build if memcached was requested but won't load
 RUN echo "extension=memcached.so" > /usr/optional_memcached.ini \
-    && case "$PECL_DEPS" in *memcached*) php -d extension=memcached.so -r 'exit(extension_loaded("memcached") ? 0 : 1);' ;; esac
+    && case "$PECL_DEPS $PIE_PACKAGES" in *memcached*) php -d extension=memcached.so -r 'exit(extension_loaded("memcached") ? 0 : 1);' ;; esac
 
 # add symlink to provide php also from /usr/bin
 RUN ln -s /usr/local/bin/php /usr/bin/php

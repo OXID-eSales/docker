@@ -85,7 +85,8 @@ case "${VERSION}" in
         "BUILD_PACKAGE_DEPS=libcurl4-openssl-dev libjpeg-dev libpng-dev libxml2-dev libavif-dev"
         "PHP_EXT_DEPS=zip bcmath soap pdo_mysql gd mysqli"
         "GD_CONFIG=--with-jpeg=/usr/local/ --with-webp=/usr/local/ --with-avif"
-        "PECL_DEPS=pecl install xdebug memcached"
+        "PECL_DEPS=true"
+        "PIE_PACKAGES=xdebug/xdebug php-memcached/php-memcached"
         "XDEBUG_INI=xdebug3.ini"
     ) ;;
 8.6-rc)
