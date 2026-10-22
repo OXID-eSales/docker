@@ -9,6 +9,7 @@ on:
     paths:
       - 'php/**'
       - '.github/workflows/build-php-images.yml'
+  workflow_dispatch:
 
 jobs:
   build:
