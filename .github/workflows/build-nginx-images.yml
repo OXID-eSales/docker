@@ -16,10 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
-    strategy:
-      fail-fast: false
-      matrix:
-        nginx_version: ["1.24"]
     steps:
       - name: build and push docker images
         uses: 'OXID-eSales/github-actions/build_docker@v5'
@@ -29,9 +25,8 @@ jobs:
           image_name: nginx
           platforms: linux/amd64,linux/arm64
           tags: |
-              oxidesales/oxideshop-docker-nginx:${{ matrix.nginx_version }}
-          build-args: |
-            NGINX_VERSION=${{ matrix.nginx_version }}
+            oxidesales/oxideshop-docker-nginx:1.26
+          build-args: ''
 
   finish:
     if: always()
