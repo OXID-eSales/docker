@@ -1,17 +1,17 @@
 ARG COMPOSER_VERSION=2
-ARG PHP_VERSION=7.0
-ARG FPM_VARIANT=""
+ARG PHP_VERSION=8.4
+ARG FPM_VARIANT="-trixie"
 
 # Workaround for copy --from not accepting arguments
-FROM composer:${COMPOSER_VERSION} as dynamic_composer
+FROM composer:${COMPOSER_VERSION} AS dynamic_composer
 
 FROM php:${PHP_VERSION}-fpm${FPM_VARIANT}
-ARG RUNTIME_PACKAGE_DEPS="msmtp libfreetype6 libjpeg62-turbo libwebp6 unzip git default-mysql-client sudo rsync liblz4-tool bc libmemcached-dev openssh-client sshpass"
-ARG BUILD_PACKAGE_DEPS="libcurl4-openssl-dev libjpeg-dev libpng-dev libwebp-dev libxml2-dev zlib1g-dev"
-ARG PHP_EXT_DEPS="curl json xml mbstring zip bcmath soap pdo_mysql gd mysqli"
-ARG PECL_DEPS="pecl install xdebug memcached"
+# package and extension lists are set per version in build.sh
+ARG RUNTIME_PACKAGE_DEPS=""
+ARG BUILD_PACKAGE_DEPS=""
+ARG PHP_EXT_DEPS=""
 ARG PHP_MEMORY_LIMIT="-1"
-ARG GD_CONFIG="--with-jpeg-dir=/usr/local/ --with-webp"
+ARG GD_CONFIG=""
 ARG XDEBUG_INI="xdebug3.ini"
 ARG XDEBUG_FROM_SOURCE="false"
 ARG XDEBUG_SOURCE_REF="master"
@@ -25,7 +25,6 @@ RUN apt-get update -y \
         $BUILD_PACKAGE_DEPS \
     && docker-php-ext-configure gd $GD_CONFIG \
     && docker-php-ext-install -j$(nproc) $PHP_EXT_DEPS \
-    && $PECL_DEPS \
     && docker-php-source delete \
     && apt-get clean \
     && apt-get autoremove -y \
@@ -70,11 +69,11 @@ COPY resources/$XDEBUG_INI /usr/optional_xdebug.ini
 RUN XDEBUG_SO="$(find /usr/local/lib/php/extensions/ -name xdebug.so)" \
       && test -n "$XDEBUG_SO" \
       && php -d zend_extension="$XDEBUG_SO" -m | grep -qi xdebug \
-	  && sed -i "s~locate_extension~$XDEBUG_SO~" /usr/optional_xdebug.ini
+      && sed -i "s~locate_extension~$XDEBUG_SO~" /usr/optional_xdebug.ini
 
 # prepare optional memcached ini, failing the build if memcached was requested but won't load
 RUN echo "extension=memcached.so" > /usr/optional_memcached.ini \
-    && case "$PECL_DEPS $PIE_PACKAGES" in *memcached*) php -d extension=memcached.so -r 'exit(extension_loaded("memcached") ? 0 : 1);' ;; esac
+    && case "$PIE_PACKAGES" in *memcached*) php -d extension=memcached.so -r 'exit(extension_loaded("memcached") ? 0 : 1);' ;; esac
 
 # add symlink to provide php also from /usr/bin
 RUN ln -s /usr/local/bin/php /usr/bin/php
@@ -89,7 +88,7 @@ RUN chmod +x /usr/local/bin/mysql-client-wrapper \
 # install latest composer v1 as composer1 binary
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 
-# install latest composer v2 (attention: latest or 2 drops php 7.1)
+# install latest composer v2
 COPY --from=dynamic_composer /usr/bin/composer /usr/bin/composer
 
 # Workaround for https://oxid-esales.atlassian.net/browse/OXDEV-4797
