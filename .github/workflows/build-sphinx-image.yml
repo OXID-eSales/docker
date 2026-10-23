@@ -9,6 +9,7 @@ on:
     paths:
       - 'sphinx/**'
       - '.github/workflows/build-sphinx-image.yml'
+  workflow_dispatch:
 
 jobs:
   build:

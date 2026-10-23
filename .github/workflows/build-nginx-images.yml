@@ -10,6 +10,7 @@ on:
     paths:
       - 'nginx/**'
       - '.github/workflows/build-nginx-images.yml'
+  workflow_dispatch:
 
 jobs:
   build:
